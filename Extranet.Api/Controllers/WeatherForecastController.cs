@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Service;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Recipes.Controllers
+namespace Extranet.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -18,15 +19,18 @@ namespace Recipes.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        private IUserService _userService;
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IUserService userService)
         {
             _logger = logger;
+            _userService = userService;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
+            _userService.AddNewUser("Gleb", "papa", "Glem Eroshkin", "123");
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),

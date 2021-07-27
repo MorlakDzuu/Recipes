@@ -4,8 +4,14 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Domain.User;
+using Infastructure.Repostitory;
+using Application.Service;
+using Infastructure;
+using Microsoft.EntityFrameworkCore;
+using Domain.Recipe;
 
-namespace Recipes
+namespace Extranet.API
 {
     public class Startup
     {
@@ -20,6 +26,17 @@ namespace Recipes
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IRecipeRepository, RecipeRepository>();
+            services.AddScoped<IRecipeService, RecipeService>();
+
+            services.AddDbContext<ApplicationContext>(
+            options =>
+                options.UseNpgsql("Host=localhost;Port=5434;Database=recipedb;Username=postgres;Password=postgres;"));
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

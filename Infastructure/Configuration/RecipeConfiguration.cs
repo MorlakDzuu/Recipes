@@ -1,0 +1,58 @@
+﻿using Domain.Recipe;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Infastructure.Configuration
+{
+    public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
+    {
+        public void Configure(EntityTypeBuilder<Recipe> builder)
+        {
+            builder.Property(item => item.Id)
+                .IsRequired()
+                .HasColumnName("id");
+
+            builder.HasKey(item => item.Id);
+
+            builder.Property(item => item.Title)
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasColumnName("title");
+
+            builder.Property(item => item.Description) 
+                .IsRequired()
+                .HasMaxLength(500)
+                .HasColumnName("description");
+
+            builder.Property(item => item.CookingTime)
+                .IsRequired()
+                .HasColumnName("cooking_time");
+
+            builder.Property(item => item.PortionsCount)
+                .IsRequired()
+                .HasColumnName("portions_count");
+
+            builder.Property(item => item.PhotoUrl)
+                .IsRequired()
+                .HasColumnName("photo_url");
+
+            builder.Property(item => item.UserId)
+                .IsRequired()
+                .HasColumnName("user_id");
+
+           
+            builder.Property(item => item.Stages)
+                .HasConversion(item => JsonConvert.SerializeObject(item, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }),
+                               item => JsonConvert.DeserializeObject<List<Stage>>(item, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }),
+                               new ValueComparer<List<Stage>>((c1, c2) => c1.SequenceEqual(c2), c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())), c => c.ToList()));
+            
+        }
+    }
+}
