@@ -8,10 +8,27 @@ namespace Domain.User
 {
     public class User
     {
-        public int Id { get; private set; }
+        public int Id { get; }
         public string Name { get; set; }
         public string Login { get; set; }
         public string Description { get; set; }
         public string Password { get; set; }
+
+        public User( int id, string name, string login, string description, string password )
+        {
+            Id = id;
+            Name = name;
+            Login = login;
+            Description = description;
+            Password = password;
+        }
+
+        public User( string name, string login, string description, string password )
+        {
+            Name = name;
+            Login = login;
+            Description = description;
+            Password = password;
+        }
     }
 }

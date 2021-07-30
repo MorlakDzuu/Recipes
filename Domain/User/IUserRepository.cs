@@ -8,9 +8,8 @@ namespace Domain.User
 {
     public interface IUserRepository
     {
-        public User Get();
-        public List<User> GetAll();
-
-        public void AddUser(User user);
+        public Task<User> GetAsync( int id );
+        public Task<List<User>> GetAllAsync();
+        public Task AddUserAsync( User user );
     }
 }

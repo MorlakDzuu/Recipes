@@ -8,7 +8,7 @@ namespace Domain.Recipe
 {
     public interface IRecipeRepository
     {
-        public Recipe Get();
-        public List<Recipe> GetAll();   
+        public Task<Recipe> GetAsync( int id );
+        public Task<List<Recipe>> GetAllAsync();   
     }
 }

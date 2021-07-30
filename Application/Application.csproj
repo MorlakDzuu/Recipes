@@ -5,13 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Validator\**" />
-    <EmbeddedResource Remove="Validator\**" />
-    <None Remove="Validator\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Infastructure\Infastructure.csproj" />
   </ItemGroup>
 
 </Project>

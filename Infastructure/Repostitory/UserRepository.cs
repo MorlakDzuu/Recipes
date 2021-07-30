@@ -1,4 +1,5 @@
 ﻿using Domain.User;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,25 +10,26 @@ namespace Infastructure.Repostitory
 {
     public class UserRepository : IUserRepository
     {
-        private ApplicationContext _applicationContext;
+        private readonly DbSet<User> _usersDbSet;
 
-        public UserRepository(ApplicationContext applicationContext)
+        public UserRepository( ApplicationContext applicationContext )
         {
-            _applicationContext = applicationContext;
-        }
-        public User Get()
-        {
-            throw new NotImplementedException();
+            _usersDbSet = applicationContext.Set<User>();
         }
 
-        public void AddUser(User user)
+        public async Task<User> GetAsync( int id )
         {
-            _applicationContext.Users.Add(user);
+            return await _usersDbSet.FindAsync( id );
         }
 
-        public List<User> GetAll()
+        public async Task AddUserAsync( User user )
         {
-            return _applicationContext.Users.ToList();
+            await _usersDbSet.AddAsync( user );
+        }
+
+        public async Task<List<User>> GetAllAsync()
+        {
+            return await _usersDbSet.ToListAsync();
         }
     }
 }

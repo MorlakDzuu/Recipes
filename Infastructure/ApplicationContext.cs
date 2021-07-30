@@ -9,15 +9,20 @@ using System.Threading.Tasks;
 
 namespace Infastructure
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationContext : DbContext, IUnitOfWork
     {
-        public DbSet<User> Users { get; set; }
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+        public ApplicationContext( DbContextOptions<ApplicationContext> options ) : base( options )
         { }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+        public async Task Commit()
         {
-            modelBuilder.ApplyConfiguration(new UserConiguration());
-            modelBuilder.ApplyConfiguration(new RecipeConfiguration());
+            await this.SaveChangesAsync();
+        }
+
+        protected override void OnModelCreating( ModelBuilder modelBuilder )
+        {
+            modelBuilder.ApplyConfiguration( new UserConiguration() );
+            modelBuilder.ApplyConfiguration( new RecipeConfiguration() );
         }
     }
 }
