@@ -17,6 +17,11 @@ namespace Infastructure.Repostitory
             _recipesDbSet = applicationContext.Set<Recipe>();
         }
 
+        public async Task AddAsync( Recipe recipe )
+        {
+            await _recipesDbSet.AddAsync( recipe );
+        }
+
         public async Task<List<Recipe>> GetAllAsync()
         {
             return await _recipesDbSet.ToListAsync();
@@ -24,7 +29,7 @@ namespace Infastructure.Repostitory
 
         public async Task<Recipe> GetAsync( int id )
         {
-            return await _recipesDbSet.FindAsync( id );
+            return await _recipesDbSet.Where( item => item.Id == id ).SingleOrDefaultAsync();
         }
     }
 }

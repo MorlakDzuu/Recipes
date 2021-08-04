@@ -10,6 +10,9 @@ using Application.Service;
 using Infastructure;
 using Microsoft.EntityFrameworkCore;
 using Domain.Recipe;
+using Domain.Tag;
+using Domain.Like;
+using Domain.Favorite;
 
 namespace Extranet.API
 {
@@ -33,11 +36,15 @@ namespace Extranet.API
             services.AddScoped<IRecipeRepository, RecipeRepository>();
             services.AddScoped<IRecipeService, RecipeService>();
 
-            services.AddScoped<IUnitOfWork>( sp => sp.GetService<ApplicationContext>() );
+            services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<ITagService, TagService>();
+
+            services.AddScoped<ILikeRepository, LikeRepository>();
+
+            services.AddScoped<IFavoriteRepository, FavoriteRepository>();
             
-            services.AddDbContext<ApplicationContext>(
-            options =>
-                options.UseNpgsql( Configuration.GetSection( "ConnectionString" ).Value ));
+            services.AddDbContext<ApplicationContext>( options => options.UseNpgsql( Configuration.GetSection( "ConnectionString" ).Value ));
+            services.AddScoped<IUnitOfWork>(sp => sp.GetService<ApplicationContext>());
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles( configuration =>

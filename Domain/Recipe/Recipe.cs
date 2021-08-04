@@ -15,21 +15,10 @@ namespace Domain.Recipe
         public int PortionsCount { get; set; }
         public string PhotoUrl { get; set; }
         public List<Stage> Stages { get; set; }
+        public List<Ingredient> Ingredients { get; set; }
         public int UserId { get; set; }
 
-        public Recipe( int id, string title, string description, int cookingTime, int portionsCount, string photoUrl, List<Stage> stages, int userId )
-        {
-            Id = id;
-            Title = title;
-            Description = description;
-            CookingTime = cookingTime;
-            PortionsCount = portionsCount;
-            PhotoUrl = photoUrl;
-            Stages = stages;
-            UserId = userId;
-        }
-
-        public Recipe( string title, string description, int cookingTime, int portionsCount, string photoUrl, List<Stage> stages, int userId )
+        public Recipe( string title, string description, int cookingTime, int portionsCount, string photoUrl, List<Stage> stages, List<Ingredient> ingredients, int userId )
         {
             Title = title;
             Description = description;
@@ -37,6 +26,7 @@ namespace Domain.Recipe
             PortionsCount = portionsCount;
             PhotoUrl = photoUrl;
             Stages = stages;
+            Ingredients = ingredients;
             UserId = userId;
         }
     }

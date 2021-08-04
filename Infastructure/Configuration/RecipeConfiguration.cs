@@ -15,7 +15,7 @@ namespace Infastructure.Configuration
         {
             builder.Property( item => item.Id )
                 .IsRequired()
-                .HasColumnName( "id ");
+                .HasColumnName( "id" );
 
             builder.HasKey( item => item.Id );
 
@@ -46,10 +46,18 @@ namespace Infastructure.Configuration
                 .HasColumnName( "user_id" );
 
             builder.Property( item => item.Stages )
+                .HasColumnName( "stages" )
                 .HasConversion( item => JsonConvert.SerializeObject( item, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore } ),
                                 item => JsonConvert.DeserializeObject<List<Stage>>( item, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore } ),
                                 new ValueComparer<List<Stage>>( ( stage1, stage2 ) => stage1.SequenceEqual( stage2 ), stage => 
                                 stage.Aggregate( 0, ( number, stageHash ) => HashCode.Combine( number, stageHash.GetHashCode() )), stage => stage.ToList() ) );
+
+            builder.Property( item => item.Ingredients )
+                .HasColumnName( "ingredients" )
+                .HasConversion( item => JsonConvert.SerializeObject( item, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore } ),
+                                item => JsonConvert.DeserializeObject<List<Ingredient>>( item, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore } ),
+                                new ValueComparer<List<Ingredient>>( ( ingredient1, ingredient2 ) => ingredient1.SequenceEqual( ingredient2 ), ingredient =>
+                                ingredient.Aggregate( 0, ( number, ingredientHash ) => HashCode.Combine( number, ingredientHash.GetHashCode() ) ), ingredient => ingredient.ToList() ) );
         }
     }
 }

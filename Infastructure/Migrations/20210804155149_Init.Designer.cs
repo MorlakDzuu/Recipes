@@ -9,8 +9,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210729192854_Initial")]
-    partial class Initial
+    [Migration("20210804155149_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,11 +20,43 @@ namespace Infastructure.Migrations
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+            modelBuilder.Entity("Domain.Favorite.Favorite", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.HasKey("UserId", "RecipeId");
+
+                    b.ToTable("Favorite");
+                });
+
+            modelBuilder.Entity("Domain.Like.Like", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.HasKey("UserId", "RecipeId");
+
+                    b.ToTable("Like");
+                });
+
             modelBuilder.Entity("Domain.Recipe.Recipe", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("CookingTime")
                         .HasColumnType("integer")
@@ -36,6 +68,10 @@ namespace Infastructure.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("description");
 
+                    b.Property<string>("Ingredients")
+                        .HasColumnType("text")
+                        .HasColumnName("ingredients");
+
                     b.Property<string>("PhotoUrl")
                         .IsRequired()
                         .HasColumnType("text")
@@ -46,7 +82,8 @@ namespace Infastructure.Migrations
                         .HasColumnName("portions_count");
 
                     b.Property<string>("Stages")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("stages");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -61,6 +98,43 @@ namespace Infastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Recipe");
+                });
+
+            modelBuilder.Entity("Domain.Tag.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Tag");
+                });
+
+            modelBuilder.Entity("Domain.Tag.TagToRecipe", b =>
+                {
+                    b.Property<int>("TagId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tag_id");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.HasKey("TagId", "RecipeId");
+
+                    b.ToTable("TagToRecipe");
                 });
 
             modelBuilder.Entity("Domain.User.User", b =>
@@ -100,7 +174,7 @@ namespace Infastructure.Migrations
                     b.HasIndex("Login")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 #pragma warning restore 612, 618
         }
