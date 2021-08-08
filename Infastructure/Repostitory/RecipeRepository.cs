@@ -27,6 +27,11 @@ namespace Infastructure.Repostitory
             return await _recipesDbSet.ToListAsync();
         }
 
+        public async Task<List<int>> GetAllIdsAsync()
+        {
+            return await _recipesDbSet.Select( recipe => recipe.Id ).ToListAsync();
+        }
+
         public async Task<Recipe> GetAsync( int id )
         {
             return await _recipesDbSet.Where( item => item.Id == id ).SingleOrDefaultAsync();

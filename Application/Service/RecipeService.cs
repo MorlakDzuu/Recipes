@@ -1,6 +1,5 @@
 ﻿using Application.Dto;
-using Domain.Favorite;
-using Domain.Like;
+using Domain.label;
 using Domain.Recipe;
 using Domain.Tag;
 using Infastructure;
@@ -15,45 +14,61 @@ namespace Application.Service
     public interface IRecipeService
     {
         public List<Recipe> GetByUserIdAsync( int userId );
-        public Task AddRecipeAsync( RecipeDto recipeDto, int userId );
-        public Task<List<Recipe>> GetAllAsync();
+        public Task<Recipe> AddRecipeAsync( RecipeDto recipeDto, int userId );
+        public Task<List<RecipePageDto>> GetAllAsync();
         public Task<RecipePageDto> GetRecipeById( int recipeId, int userId );
         public Task AddLikeRecipeByUserAsync( int userId, int recipeId );
         public Task AddFavoriteRecipeByUser( int userId, int recipeId );
     }
 
-    public class RecipeService : IRecipeService     
+    public class RecipeService : IRecipeService
     {
         private readonly IRecipeRepository _recipeRepository;
         private readonly ITagService _tagService;
-        private readonly IFavoriteRepository _favoriteRepository;
-        private readonly ILikeRepository _likeRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILabelRepository _labelRepository;
 
-        public RecipeService( IRecipeRepository recipeRepository, ITagService tagService, IFavoriteRepository favoriteRepository, ILikeRepository likeRepository, IUnitOfWork unitOfWork )
+        public RecipeService
+            (
+            IRecipeRepository recipeRepository,
+            ITagService tagService,
+            ILabelRepository labelRepository
+            )
         {
             _recipeRepository = recipeRepository;
             _tagService = tagService;
-            _favoriteRepository = favoriteRepository;
-            _likeRepository = likeRepository;
-            _unitOfWork = unitOfWork;
+            _labelRepository = labelRepository;
         }
 
-        public async Task AddRecipeAsync( RecipeDto recipeDto, int userId )
+        public async Task<Recipe> AddRecipeAsync( RecipeDto recipeDto, int userId )
         {
-            Recipe recipe = new Recipe( recipeDto.Title, recipeDto.Description, recipeDto.CookingTime, recipeDto.PortionsCount, recipeDto.PhotoUrl, recipeDto.Stages, recipeDto.Ingredients, userId );
+            Recipe recipe = new Recipe
+                (
+                recipeDto.Title,
+                recipeDto.Description,
+                recipeDto.CookingTime,
+                recipeDto.PortionsCount,
+                recipeDto.PhotoUrl,
+                recipeDto.Stages,
+                recipeDto.Ingredients,
+                userId
+                );
             await _recipeRepository.AddAsync( recipe );
-            await _unitOfWork.Commit();
-
-            foreach( string tag in recipeDto.Tags )
-            {
-                await _tagService.AddToRecipeAsync( tag, recipe.Id );
-            }
+            return recipe;
         }
 
-        public async Task<List<Recipe>> GetAllAsync()
+        public async Task<List<RecipePageDto>> GetAllAsync()
         {
-            return await _recipeRepository.GetAllAsync();
+            List<int> recipesIds = await _recipeRepository.GetAllIdsAsync();
+            List<RecipePageDto> recipePageDtos = new List<RecipePageDto>();
+            int userId = 1;
+
+            foreach ( int recipeId in recipesIds )
+            {
+                RecipePageDto recipePageDto = await GetRecipeById( recipeId, userId );
+                recipePageDtos.Add( recipePageDto );
+            }
+
+            return recipePageDtos;
         }
 
         public List<Recipe> GetByUserIdAsync( int userId )
@@ -65,27 +80,36 @@ namespace Application.Service
         {
             Recipe recipe = await _recipeRepository.GetAsync( recipeId );
             List<string> tags = await _tagService.GetTagsByRecipeId( recipeId );
-            int favoritesCount = await _favoriteRepository.GetFavoriteCountByRecipeId( recipeId );
-            int likesCount = await _likeRepository.GetCountByRecipeIdAsync( recipeId );
-            bool isLiked = await _likeRepository.IsRecipeLikedByUser( recipeId, userId );
+            int favoritesCount = await _labelRepository.GetFavoriteCountByRecipeIdAsync( recipeId );
+            int likesCount = await _labelRepository.GetLikeCountByRecipeIdAsync( recipeId );
+            bool isLiked = await _labelRepository.IsRecipeLikedByUser( recipeId, userId );
 
-            RecipePageDto recipePageDto = new RecipePageDto { Title = recipe.Title, Description = recipe.Description, CookingTime = recipe.CookingTime, PortionsCount = recipe.PortionsCount,
-                                                              FavoritesCount = favoritesCount, LikesCount = likesCount, PhotoUrl = recipe.PhotoUrl, Stages = recipe.Stages, 
-                                                              Ingredients = recipe.Ingredients, Tags = tags, IsLiked = isLiked };
+            RecipePageDto recipePageDto = new RecipePageDto
+            {
+                Title = recipe.Title,
+                Description = recipe.Description,
+                CookingTime = recipe.CookingTime,
+                PortionsCount = recipe.PortionsCount,
+                FavoritesCount = favoritesCount,
+                LikesCount = likesCount,
+                PhotoUrl = recipe.PhotoUrl,
+                Stages = recipe.Stages,
+                Ingredients = recipe.Ingredients,
+                Tags = tags,
+                IsLiked = isLiked
+            };
 
             return recipePageDto;
         }
 
         public async Task AddLikeRecipeByUserAsync( int userId, int recipeId )
         {
-            await _likeRepository.AddAsync( userId, recipeId );
-            await _unitOfWork.Commit();
+            await _labelRepository.AddLikeAsync( userId, recipeId );
         }
 
         public async Task AddFavoriteRecipeByUser( int userId, int recipeId )
         {
-            await _favoriteRepository.AddAsync( userId, recipeId );
-            await _unitOfWork.Commit();
+            await _labelRepository.AddFavoriteAsync( userId, recipeId );
         }
     }
 }

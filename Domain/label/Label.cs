@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Favorite
+namespace Domain.label
 {
-    public class Favorite
+    public class Label
     {
         public int UserId { get; set; }
         public int RecipeId { get; set; }
+        public int Type { get; set; }
 
-        public Favorite( int userId, int recipeId )
+        public Label( int userId, int recipeId, int type )
         {
             UserId = userId;
             RecipeId = recipeId;
+            Type = type;
         }
     }
 }

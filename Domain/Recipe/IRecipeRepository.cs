@@ -11,5 +11,6 @@ namespace Domain.Recipe
         public Task<Recipe> GetAsync( int id );
         public Task<List<Recipe>> GetAllAsync();
         public Task AddAsync( Recipe recipe );
+        public Task<List<int>> GetAllIdsAsync();
     }
 }

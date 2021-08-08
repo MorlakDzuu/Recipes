@@ -10,34 +10,42 @@ namespace Application.Service
 {
     public interface ITagService
     {
-        public Task AddToRecipeAsync( string name, int recipeId );
+        public Task AddTagsToRecipeAsync( List<string> tags, int recipeId );
         public Task<List<string>> GetTagsByRecipeId( int recipeId );
+        public Task AddNewTagsAsync( List<string> tags );
     }
     public class TagService : ITagService
     {
         private readonly ITagRepository _tagRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public TagService( ITagRepository tagRepository, IUnitOfWork unitOfWork )
+        public TagService( ITagRepository tagRepository )
         {
             _tagRepository = tagRepository;
-            _unitOfWork = unitOfWork;
         }
 
-        public async Task AddToRecipeAsync( string name, int recipeId )
+        public async Task AddNewTagsAsync( List<string> tags )
         {
-            Tag tag = await _tagRepository.GetTagByName( name );
-
-            if ( tag == null )
+            foreach ( string tagStr in tags )
             {
-                tag = new Tag( name );
-                await _tagRepository.AddTagAsync( tag );
-                await _unitOfWork.Commit();
-            }
+                Tag tag = await _tagRepository.GetTagByName( tagStr );
 
-            TagToRecipe tagToRecipe = new TagToRecipe( tag.Id, recipeId );
-            await _tagRepository.AddTagToRecipeAsync( tagToRecipe );
-            await _unitOfWork.Commit();
+                if ( tag == null )
+                {
+                    tag = new Tag( tagStr );
+                    await _tagRepository.AddTagAsync( tag );
+                }
+            }
+        }
+
+        public async Task AddTagsToRecipeAsync( List<string> tags, int recipeId )
+        {
+            foreach ( string tagStr in tags )
+            {
+                Tag tag = await _tagRepository.GetTagByName( tagStr );
+
+                TagToRecipe tagToRecipe = new TagToRecipe( tag.Id, recipeId );
+                await _tagRepository.AddTagToRecipeAsync( tagToRecipe );
+            }
         }
 
         public async Task<List<string>> GetTagsByRecipeId( int recipeId )

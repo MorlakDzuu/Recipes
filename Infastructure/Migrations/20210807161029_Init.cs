@@ -8,27 +8,16 @@ namespace Infastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Favorite",
+                name: "Label",
                 columns: table => new
                 {
                     user_id = table.Column<int>(type: "integer", nullable: false),
-                    recipe_id = table.Column<int>(type: "integer", nullable: false)
+                    recipe_id = table.Column<int>(type: "integer", nullable: false),
+                    type = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Favorite", x => new { x.user_id, x.recipe_id });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Like",
-                columns: table => new
-                {
-                    user_id = table.Column<int>(type: "integer", nullable: false),
-                    recipe_id = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Like", x => new { x.user_id, x.recipe_id });
+                    table.PrimaryKey("PK_Label", x => new { x.user_id, x.recipe_id, x.type });
                 });
 
             migrationBuilder.CreateTable(
@@ -108,10 +97,7 @@ namespace Infastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Favorite");
-
-            migrationBuilder.DropTable(
-                name: "Like");
+                name: "Label");
 
             migrationBuilder.DropTable(
                 name: "Recipe");

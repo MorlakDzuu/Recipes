@@ -18,36 +18,6 @@ namespace Infastructure.Migrations
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("Domain.Favorite.Favorite", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("recipe_id");
-
-                    b.HasKey("UserId", "RecipeId");
-
-                    b.ToTable("Favorite");
-                });
-
-            modelBuilder.Entity("Domain.Like.Like", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("recipe_id");
-
-                    b.HasKey("UserId", "RecipeId");
-
-                    b.ToTable("Like");
-                });
-
             modelBuilder.Entity("Domain.Recipe.Recipe", b =>
                 {
                     b.Property<int>("Id")
@@ -173,6 +143,25 @@ namespace Infastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("Domain.label.Label", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
+
+                    b.HasKey("UserId", "RecipeId", "Type");
+
+                    b.ToTable("Label");
                 });
 #pragma warning restore 612, 618
         }
