@@ -30,8 +30,6 @@ namespace Extranet.Api.Controllers
             int userId = 1;
 
             Recipe recipe = await _recipeService.AddRecipeAsync( recipeDto, userId );
-            await _unitOfWork.Commit();
-
             await _tagService.AddNewTagsAsync( recipeDto.Tags );
             await _unitOfWork.Commit();
 
@@ -73,8 +71,90 @@ namespace Extranet.Api.Controllers
             //TODO: add user id
             int userId = 1;
 
-            await _recipeService.AddFavoriteRecipeByUser( userId, recipeId );
+            await _recipeService.AddFavoriteRecipeByUserAsync( userId, recipeId );
             await _unitOfWork.Commit();
+        }
+
+        [HttpGet]
+        [Route( "Recipe/DeleteLike/{recipeId}" )]
+        public async Task DeleteLike( int recipeId )
+        {
+            //TODO: add user id
+            int userId = 1;
+
+            await _recipeService.DeleteLikeByUserAsync( userId, recipeId );
+            await _unitOfWork.Commit();
+        }
+
+        [HttpGet]
+        [Route( "Recipe/DeleteFavorite/{recipeId}" )]
+        public async Task DeleteFavorite( int recipeId )
+        {
+            //TODO: add user id
+            int userId = 1;
+
+            await _recipeService.DeleteFavoriteByUserAsync( userId, recipeId );
+            await _unitOfWork.Commit();
+        }
+
+        [HttpPost]
+        [Route( "Recipe/Edit/{recipeId}" )]
+        public async Task EditRecipe( [FromBody] RecipeDto recipeDto, int recipeId )
+        {
+            await _recipeService.EditRecipeAsync( recipeDto, recipeId );
+            await _tagService.AddNewTagsAsync( recipeDto.Tags );
+            await _unitOfWork.Commit();
+
+            await _tagService.DeleteOldTagsAsync( recipeDto.Tags, recipeId );
+            await _tagService.AddTagsToRecipeAsync( recipeDto.Tags, recipeId );
+            await _unitOfWork.Commit();
+        }
+
+        [HttpGet]
+        [Route( "Recipe/Delete/{recipeId}" )]
+        public async Task DeleteRecipe( int recipeId )
+        {
+            await _recipeService.DeleteRecipeByIdAsync( recipeId );
+            await _unitOfWork.Commit();
+        }
+
+        [HttpGet]
+        [Route( "Recipe/Feed/{pageNumber}" )]
+        public async Task<List<RecipeFeedDto>> GetFeed( int pageNumber )
+        {
+            //TODO: add userId
+            int userId = 1;
+
+            return await _recipeService.GetRecipesFeedAsync( pageNumber, userId );
+        }
+
+        [HttpGet]
+        [Route( "Recipe/FeedSearch/{pageNumber}" )]
+        public async Task<List<RecipeFeedDto>> GetFeedBySearchString( int pageNumber, string search )
+        {
+            //TODO: add userId
+            int userId = 1;
+
+            return await _recipeService.GetRecipesFeedBySearchStringAsync( pageNumber, userId, search );
+        }
+
+        [HttpGet]
+        [Route( "Recipe/User/{pageNumber}" )]
+        public async Task<List<RecipeFeedDto>> GetUserFeed( int pageNumber )
+        {
+            //TODO: add userId
+            int userId = 1;
+
+            return await _recipeService.GetRecipesFeedByUserIdAsync( pageNumber, userId );
+        }
+
+        [HttpGet]
+        public async Task<List<RecipeFeedDto>> GetFavorites()
+        {
+            //TODO: add userId
+            int userId = 1;
+
+            return await _recipeService.GetFavoriteFeedByUserIdAsync( userId );
         }
     }
 }

@@ -13,6 +13,8 @@ namespace Application.Service
         public Task AddTagsToRecipeAsync( List<string> tags, int recipeId );
         public Task<List<string>> GetTagsByRecipeId( int recipeId );
         public Task AddNewTagsAsync( List<string> tags );
+        public Task DeleteOldTagsAsync( List<string> newTags, int recipeId );
+        public Task DeleteTagsFromRecipeAsyc( int recipeId );
     }
     public class TagService : ITagService
     {
@@ -27,7 +29,7 @@ namespace Application.Service
         {
             foreach ( string tagStr in tags )
             {
-                Tag tag = await _tagRepository.GetTagByName( tagStr );
+                Tag tag = await _tagRepository.GetTagByNameAsync( tagStr );
 
                 if ( tag == null )
                 {
@@ -41,10 +43,32 @@ namespace Application.Service
         {
             foreach ( string tagStr in tags )
             {
-                Tag tag = await _tagRepository.GetTagByName( tagStr );
+                Tag tag = await _tagRepository.GetTagByNameAsync( tagStr );
+                bool isConnectExist = await _tagRepository.IsTagToRecipeExistAsync( tag.Id, recipeId );
 
-                TagToRecipe tagToRecipe = new TagToRecipe( tag.Id, recipeId );
-                await _tagRepository.AddTagToRecipeAsync( tagToRecipe );
+                if ( !isConnectExist )
+                {
+                    TagToRecipe tagToRecipe = new TagToRecipe( tag.Id, recipeId );
+                    await _tagRepository.AddTagToRecipeAsync( tagToRecipe );
+                }
+            }
+        }
+
+        public async Task DeleteTagsFromRecipeAsyc( int recipeId )
+        {
+            List<string> tags = new List<string>();
+            await DeleteOldTagsAsync( tags, recipeId );
+        }
+
+        public async Task DeleteOldTagsAsync( List<string> newTags, int recipeId )
+        {
+            List<Tag> oldTags = await _tagRepository.GetTagsByRecipeIdAsync( recipeId );
+
+            List<string> oldTagsStr = oldTags.ConvertAll( item => item.Name );
+            foreach ( string tag in oldTagsStr )
+            {
+                if ( !newTags.Contains( tag ) )
+                    await _tagRepository.DeleteTagFromRecipeAsync( tag, recipeId );
             }
         }
 

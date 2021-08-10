@@ -21,5 +21,12 @@ namespace Domain.User
             Description = description;
             Password = password;
         }
+
+        public User(string name, string login, string password)
+        {
+            Name = name;
+            Login = login;
+            Password = password;
+        }
     }
 }

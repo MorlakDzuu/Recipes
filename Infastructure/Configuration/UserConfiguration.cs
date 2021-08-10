@@ -32,7 +32,6 @@ namespace Infastructure.Configuration
             builder.HasIndex( item => item.Login ).IsUnique();
 
             builder.Property( item => item.Description )
-                .IsRequired()
                 .HasMaxLength( 300 )
                 .HasColumnName( "description" );
 

@@ -65,15 +65,15 @@ namespace Infastructure.Repostitory
             return true;
         }
 
-        public void RemoveFavorite( int userId, int recipeId )
+        public async Task DeleteFavoriteAsync( int userId, int recipeId )
         {
-            Label label = new Label( userId, recipeId, FAVORITE_TYPE );
+            Label label = await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.RecipeId == recipeId ) && ( item.Type == FAVORITE_TYPE ) ).SingleOrDefaultAsync();
             _labelDbSet.Remove( label );
         }
 
-        public void RemoveLike( int userId, int recipeId )
+        public async Task DeleteLikeAsync( int userId, int recipeId )
         {
-            Label label = new Label( userId, recipeId, LIKE_TYPE );
+            Label label = await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.RecipeId == recipeId ) && ( item.Type == LIKE_TYPE ) ).SingleOrDefaultAsync();
             _labelDbSet.Remove( label );
         }
     }

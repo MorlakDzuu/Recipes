@@ -31,5 +31,10 @@ namespace Infastructure.Repostitory
         {
             return await _usersDbSet.ToListAsync();
         }
+
+        public async Task<User> GetByLoginAsync( string login )
+        {
+            return await _usersDbSet.Where( item => item.Login == login ).SingleOrDefaultAsync();
+        }
     }
 }

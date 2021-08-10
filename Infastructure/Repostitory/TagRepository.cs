@@ -13,7 +13,7 @@ namespace Infastructure.Repostitory
         private readonly DbSet<Tag> _tagsDbSet;
         private readonly DbSet<TagToRecipe> _tagToRecipeDbSet;
 
-        public TagRepository(ApplicationContext applicationContext)
+        public TagRepository( ApplicationContext applicationContext )
         {
             _tagsDbSet = applicationContext.Set<Tag>();
             _tagToRecipeDbSet = applicationContext.Set<TagToRecipe>();
@@ -34,9 +34,11 @@ namespace Infastructure.Repostitory
             throw new NotImplementedException();
         }
 
-        public Task DeleteTagFromRecipeAsync( int tagId, int recipeId )
+        public async Task DeleteTagFromRecipeAsync( string name, int recipeId )
         {
-            throw new NotImplementedException();
+            Tag tag = await GetTagByNameAsync( name );
+            TagToRecipe tagToRecipe = await _tagToRecipeDbSet.Where( item => ( item.TagId == tag.Id ) && ( item.RecipeId == recipeId ) ).SingleAsync();
+            _tagToRecipeDbSet.Remove( tagToRecipe );
         }
 
         public Task<List<Tag>> GetAllTagsAsync()
@@ -44,7 +46,7 @@ namespace Infastructure.Repostitory
             throw new NotImplementedException();
         }
 
-        public async Task<Tag> GetTagByName(string name)
+        public async Task<Tag> GetTagByNameAsync( string name )
         {
             return await _tagsDbSet.Where( item => item.Name == name ).SingleOrDefaultAsync();
         }
@@ -56,13 +58,22 @@ namespace Infastructure.Repostitory
                 .Join( _tagsDbSet,
                 tagToRecipe => tagToRecipe.TagId,
                 tag => tag.Id,
-                (tagToRecipe, tag) => tag)
+                ( tagToRecipe, tag ) => tag )
                 .ToListAsync();
         }
 
         public Task<List<Tag>> GetTagsByStringAsync( string start )
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> IsTagToRecipeExistAsync( int tagId, int recipeId )
+        {
+            TagToRecipe tagToRecipe = await _tagToRecipeDbSet.Where( item => ( item.TagId == tagId ) && ( item.RecipeId == recipeId ) ).SingleOrDefaultAsync();
+
+            if ( tagToRecipe == null )
+                return false;
+            return true;
         }
     }
 }
