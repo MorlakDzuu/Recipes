@@ -11,54 +11,38 @@ namespace Infastructure.Repostitory
 {
     public class LabelRepository : ILabelRepository
     {
-        private const int LIKE_TYPE = 1;
-        private const int FAVORITE_TYPE = 2;
-
         private readonly DbSet<Label> _labelDbSet;
-        private readonly DbSet<Recipe> _recipeDbSet;
 
         public LabelRepository( ApplicationContext applicationContext )
         {
             _labelDbSet = applicationContext.Set<Label>();
-            _recipeDbSet = applicationContext.Set<Recipe>();
         }
 
         public async Task AddFavoriteAsync( int userId, int recipeId )
         {
-            Label label = new Label( userId, recipeId, FAVORITE_TYPE );
+            Label label = new Label( userId, recipeId, LabelTypes.Favorite );
             await _labelDbSet.AddAsync( label );
         }
 
         public async Task AddLikeAsync( int userId, int recipeId )
         {
-            Label label = new Label( userId, recipeId, LIKE_TYPE );
+            Label label = new Label( userId, recipeId, LabelTypes.Like );
             await _labelDbSet.AddAsync( label );
         }
 
         public async Task<int> GetFavoriteCountByRecipeIdAsync( int recipeId )
         {
-            return await _labelDbSet.Where( item => ( item.RecipeId == recipeId ) && ( item.Type == FAVORITE_TYPE ) ).CountAsync();
-        }
-
-        public async Task<List<Recipe>> GetFavoriteRecipesByUserIdAsync( int userId )
-        {
-            return await _labelDbSet
-               .Where( item => ( item.UserId == userId ) && ( item.Type == FAVORITE_TYPE ) )
-               .Join( _recipeDbSet,
-               favorite => favorite.RecipeId,
-               recipe => recipe.Id,
-               ( favorite, recipe ) => recipe )
-               .ToListAsync();
+            return await _labelDbSet.Where( item => ( item.RecipeId == recipeId ) && ( item.Type == LabelTypes.Favorite ) ).CountAsync();
         }
 
         public async Task<int> GetLikeCountByRecipeIdAsync( int recipeId )
         {
-            return await _labelDbSet.Where( item => ( item.RecipeId == recipeId ) && ( item.Type == LIKE_TYPE ) ).CountAsync();
+            return await _labelDbSet.Where( item => ( item.RecipeId == recipeId ) && ( item.Type == LabelTypes.Like ) ).CountAsync();
         }
 
         public async Task<bool> IsRecipeLikedByUser( int recipeId, int userId )
         {
-            Label label = await _labelDbSet.Where( item => ( item.RecipeId == recipeId ) && ( item.UserId == userId ) && ( item.Type == LIKE_TYPE ) ).SingleOrDefaultAsync();
+            Label label = await _labelDbSet.Where( item => ( item.RecipeId == recipeId ) && ( item.UserId == userId ) && ( item.Type == LabelTypes.Like ) ).SingleOrDefaultAsync();
 
             if ( label == null )
                 return false;
@@ -67,13 +51,13 @@ namespace Infastructure.Repostitory
 
         public async Task DeleteFavoriteAsync( int userId, int recipeId )
         {
-            Label label = await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.RecipeId == recipeId ) && ( item.Type == FAVORITE_TYPE ) ).SingleOrDefaultAsync();
+            Label label = await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.RecipeId == recipeId ) && ( item.Type == LabelTypes.Favorite ) ).SingleOrDefaultAsync();
             _labelDbSet.Remove( label );
         }
 
         public async Task DeleteLikeAsync( int userId, int recipeId )
         {
-            Label label = await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.RecipeId == recipeId ) && ( item.Type == LIKE_TYPE ) ).SingleOrDefaultAsync();
+            Label label = await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.RecipeId == recipeId ) && ( item.Type == LabelTypes.Like ) ).SingleOrDefaultAsync();
             _labelDbSet.Remove( label );
         }
     }

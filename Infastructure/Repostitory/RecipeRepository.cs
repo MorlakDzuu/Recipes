@@ -1,4 +1,5 @@
-﻿using Domain.Recipe;
+﻿using Domain.label;
+using Domain.Recipe;
 using Domain.Tag;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,12 +16,14 @@ namespace Infastructure.Repostitory
         private readonly DbSet<Recipe> _recipesDbSet;
         private readonly DbSet<TagToRecipe> _tagToRecipesDbSet;
         private readonly DbSet<Tag> _tagsDbSet;
+        private readonly DbSet<Label> _labelDbSet;
 
         public RecipeRepository( ApplicationContext applicationContext )
         {
             _recipesDbSet = applicationContext.Set<Recipe>();
             _tagToRecipesDbSet = applicationContext.Set<TagToRecipe>();
             _tagsDbSet = applicationContext.Set<Tag>();
+            _labelDbSet = applicationContext.Set<Label>();
         }
 
         public async Task AddAsync( Recipe recipe )
@@ -84,6 +87,17 @@ namespace Infastructure.Repostitory
                 .ToListAsync();
 
             return await _recipesDbSet.Where( item => recipesIds.Contains( item.Id ) ).ToListAsync();
+        }
+
+        public async Task<List<Recipe>> GetFavoriteRecipesByUserIdAsync( int userId )
+        {
+            return await _labelDbSet
+               .Where( item => ( item.UserId == userId ) && ( item.Type == LabelTypes.Favorite ) )
+               .Join( _recipesDbSet,
+               favorite => favorite.RecipeId,
+               recipe => recipe.Id,
+               ( favorite, recipe ) => recipe )
+               .ToListAsync();
         }
 
         public async Task<List<Recipe>> GetUsingPaginationByUserIdAsync( int pageNumber, int userId )

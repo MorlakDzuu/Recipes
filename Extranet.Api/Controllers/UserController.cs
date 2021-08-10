@@ -1,11 +1,8 @@
 ﻿using Application.Dto;
 using Application.Service;
-using Domain.User;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,6 +18,7 @@ namespace Extranet.Api.Controllers
         private readonly IUserService _userService;
         private readonly IPasswordService _passwordService;
         private readonly IUnitOfWork _unitOfWork;
+
         public UserController( IUserService userService, IPasswordService passwordService, IUnitOfWork unitOfWork )
         {
             _userService = userService;
@@ -46,9 +44,9 @@ namespace Extranet.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login( string login, string password )
+        public async Task<IActionResult> Login( [FromBody] UserLoginDto userLoginDto )
         {
-            var identity = await _passwordService.GetIdentityAsync( login, password );
+            var identity = await _passwordService.GetIdentityAsync( userLoginDto.Login, userLoginDto.Password );
 
             if ( identity == null )
             {

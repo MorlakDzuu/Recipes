@@ -10,9 +10,9 @@ namespace Domain.label
     {
         public int UserId { get; set; }
         public int RecipeId { get; set; }
-        public int Type { get; set; }
+        public LabelTypes Type { get; set; }
 
-        public Label( int userId, int recipeId, int type )
+        public Label( int userId, int recipeId, LabelTypes type )
         {
             UserId = userId;
             RecipeId = recipeId;

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Extranet.Api.Auth;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace Extranet.API
 {
@@ -48,6 +49,10 @@ namespace Extranet.API
 
             services.AddDbContext<ApplicationContext>( options => options.UseNpgsql( Configuration.GetSection( "ConnectionString" ).Value ) );
             services.AddScoped<IUnitOfWork>( sp => sp.GetService<ApplicationContext>() );
+
+            services.AddSession( options => {
+                options.IdleTimeout = TimeSpan.FromMinutes( 60 );
+            } );
 
             services.AddAuthentication( auth =>
             {
@@ -95,13 +100,6 @@ namespace Extranet.API
                 app.UseSpaStaticFiles();
             }
 
-            app.UseEndpoints( endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}" );
-            } );
-
             app.UseRouting();
             app.UseSession();
 
@@ -117,6 +115,13 @@ namespace Extranet.API
 
             app.UseAuthorization();
             app.UseAuthentication();
+
+            app.UseEndpoints( endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}" );
+            } );
 
             app.UseSpa( spa =>
             {

@@ -189,7 +189,7 @@ namespace Application.Service
 
         public async Task<List<RecipeFeedDto>> GetFavoriteFeedByUserIdAsync( int userId )
         {
-            List<Recipe> recipes = await _labelRepository.GetFavoriteRecipesByUserIdAsync( userId );
+            List<Recipe> recipes = await _recipeRepository.GetFavoriteRecipesByUserIdAsync( userId );
             return await ConvertRecipesToRecipeFeedDtos( recipes, userId );
         }
 

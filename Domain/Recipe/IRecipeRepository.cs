@@ -13,6 +13,7 @@ namespace Domain.Recipe
         public Task<List<Recipe>> GetUsingPaginationAsync( int pageNumber );
         public Task<List<Recipe>> GetUsingPaginationBySearchStringAsync( int pageNumber, string searchString );
         public Task<List<Recipe>> GetUsingPaginationByUserIdAsync( int pageNumber, int userId );
+        public Task<List<Recipe>> GetFavoriteRecipesByUserIdAsync( int userId );
         public Task AddAsync( Recipe recipe );
         public Task<List<int>> GetAllIdsAsync();
         public Task DeleteAsync( int id );

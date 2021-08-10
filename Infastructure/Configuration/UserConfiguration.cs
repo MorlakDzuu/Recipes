@@ -37,7 +37,6 @@ namespace Infastructure.Configuration
 
             builder.Property( item => item.Password )
                 .IsRequired()
-                .HasMaxLength( 50 )
                 .HasColumnName( "password" );
         }
     }

@@ -12,7 +12,6 @@ namespace Domain.label
         public Task DeleteLikeAsync( int userId, int recipeId );
         public Task AddFavoriteAsync( int userId, int recipeId );
         public Task DeleteFavoriteAsync( int userId, int recipeId );
-        public Task<List<Recipe.Recipe>> GetFavoriteRecipesByUserIdAsync( int userId );
         public Task<int> GetFavoriteCountByRecipeIdAsync( int recipeId );
         public Task<int> GetLikeCountByRecipeIdAsync( int recipeId );
         public Task<bool> IsRecipeLikedByUser( int recipeId, int userId );
