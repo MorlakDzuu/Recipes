@@ -12,6 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Extranet.Api.Auth;
 using Microsoft.AspNetCore.Http;
 using Infastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Extranet.Api.Controllers
 {
@@ -71,6 +72,14 @@ namespace Extranet.Api.Controllers
             };
 
             return Json( response );
+        }
+
+        [Authorize( AuthenticationSchemes = "Bearer" )]
+        [HttpGet]
+        public IActionResult Logoff()
+        {
+            HttpContext.Session.Clear();
+            return Ok();
         }
     }
 }
