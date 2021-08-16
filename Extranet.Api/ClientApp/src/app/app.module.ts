@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { RecipeOfTheDayComponent } from './home/recipe-of-the-day/recipe-of-the-day.component';
+import { RecipeOfDayComponent } from './home/recipe-of-day/recipe-of-day.component';
 import { SearchRecipesComponent } from './home/search-recipes/search-recipes.component';
 import { SortingByTagsComponent } from './home/sorting-by-tags/sorting-by-tags.component';
 import { FooterComponent } from './footer/footer.component';
@@ -26,7 +26,7 @@ import { LoginButtonComponent } from './nav-menu/login-button/login-button.compo
     FooterComponent,
     CounterComponent,
     SortingByTagsComponent,
-    RecipeOfTheDayComponent,
+    RecipeOfDayComponent,
     SearchRecipesComponent,
     LoggedInComponent,
     LoginButtonComponent,
