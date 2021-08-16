@@ -10,9 +10,11 @@ using Extranet.Api.Auth;
 using Microsoft.AspNetCore.Http;
 using Infastructure;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Cryptography;
 
 namespace Extranet.Api.Controllers
 {
+    [Route( "[controller]" )]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -26,24 +28,16 @@ namespace Extranet.Api.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        [HttpPost, Route( "register" )]
+        public async Task Register( [FromBody] UserRegistrationDto userRegistrationDto )
         {
-            return View();
-        }
+            userRegistrationDto.Password = _passwordService.HashPassword( userRegistrationDto.Password, RandomNumberGenerator.Create() );
 
-        [HttpPost]
-        public async Task RegisterUser( [FromBody] UserRegistrationDto userRegistrationDto )
-        {
             await _userService.AddAsync( userRegistrationDto );
             await _unitOfWork.Commit();
         }
 
-        public async Task<List<UserDto>> GetAll()
-        {
-            return await _userService.GetAllAsync();
-        }
-
-        [HttpPost]
+        [HttpPost, Route( "login" )]
         public async Task<IActionResult> Login( [FromBody] UserLoginDto userLoginDto )
         {
             var identity = await _passwordService.GetIdentityAsync( userLoginDto.Login, userLoginDto.Password );
@@ -72,8 +66,8 @@ namespace Extranet.Api.Controllers
             return Json( response );
         }
 
+        [HttpGet, Route("logout")]
         [Authorize( AuthenticationSchemes = "Bearer" )]
-        [HttpGet]
         public IActionResult Logoff()
         {
             HttpContext.Session.Clear();

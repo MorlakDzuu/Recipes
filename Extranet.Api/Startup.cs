@@ -11,7 +11,7 @@ using Infastructure;
 using Microsoft.EntityFrameworkCore;
 using Domain.Recipe;
 using Domain.Tag;
-using Domain.label;
+using Domain.Label;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Extranet.Api.Auth;
@@ -51,7 +51,7 @@ namespace Extranet.API
             services.AddScoped<IUnitOfWork>( sp => sp.GetService<ApplicationContext>() );
 
             services.AddSession( options => {
-                options.IdleTimeout = TimeSpan.FromMinutes( 60 );
+                options.IdleTimeout = TimeSpan.FromMinutes( 15 );
             } );
 
             services.AddAuthentication( auth =>
@@ -116,12 +116,7 @@ namespace Extranet.API
             app.UseAuthorization();
             app.UseAuthentication();
 
-            app.UseEndpoints( endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}" );
-            } );
+            app.UseEndpoints( endpoints => { endpoints.MapControllers(); } );
 
             app.UseSpa( spa =>
             {

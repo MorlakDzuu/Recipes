@@ -1,4 +1,4 @@
-﻿using Domain.label;
+﻿using Domain.Label;
 using Domain.Recipe;
 using Microsoft.EntityFrameworkCore;
 using System;

@@ -21,7 +21,7 @@ namespace Infastructure.Configuration
 
             builder.Property( item => item.Name )
                 .IsRequired()
-                .HasMaxLength(60)
+                .HasMaxLength( 60 )
                 .HasColumnName( "name" );
 
             builder.HasIndex( item => item.Name ).IsUnique();

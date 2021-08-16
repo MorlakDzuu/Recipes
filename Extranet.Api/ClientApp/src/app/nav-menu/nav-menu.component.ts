@@ -1,18 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-nav-menu',
+  selector: 'app-header',
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css']
 })
-export class NavMenuComponent {
-  isExpanded = false;
+export class NavMenuComponent implements OnInit {
 
-  collapse() {
-    this.isExpanded = false;
+  isLogIn: boolean = false;
+
+  toggleLoginStatus(_isLogIn: any) {
+    this.isLogIn = !_isLogIn;
   }
 
-  toggle() {
-    this.isExpanded = !this.isExpanded;
+  constructor() { }
+
+  ngOnInit(): void {
   }
+
 }

@@ -13,9 +13,9 @@ namespace Application.Service
         public Task AddTagsToRecipeAsync( List<string> tags, int recipeId );
         public Task<List<string>> GetTagsByRecipeId( int recipeId );
         public Task AddNewTagsAsync( List<string> tags );
-        public Task DeleteOldTagsAsync( List<string> newTags, int recipeId );
-        public Task DeleteTagsFromRecipeAsyc( int recipeId );
+        public Task DeleteOldTagsAsync( int recipeId, List<string> newTags = null );
     }
+
     public class TagService : ITagService
     {
         private readonly ITagRepository _tagRepository;
@@ -54,21 +54,22 @@ namespace Application.Service
             }
         }
 
-        public async Task DeleteTagsFromRecipeAsyc( int recipeId )
+        public async Task DeleteOldTagsAsync( int recipeId, List<string> newTags = null )
         {
-            List<string> tags = new List<string>();
-            await DeleteOldTagsAsync( tags, recipeId );
-        }
+            if ( newTags is null )
+            {
+                newTags = new List<string>();
+            }
 
-        public async Task DeleteOldTagsAsync( List<string> newTags, int recipeId )
-        {
             List<Tag> oldTags = await _tagRepository.GetTagsByRecipeIdAsync( recipeId );
 
             List<string> oldTagsStr = oldTags.ConvertAll( item => item.Name );
             foreach ( string tag in oldTagsStr )
             {
                 if ( !newTags.Contains( tag ) )
+                {
                     await _tagRepository.DeleteTagFromRecipeAsync( tag, recipeId );
+                }
             }
         }
 

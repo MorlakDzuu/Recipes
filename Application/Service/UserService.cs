@@ -19,12 +19,10 @@ namespace Application.Service
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IPasswordService _passwordService;
 
-        public UserService( IUserRepository userRepository, IPasswordService passwordService )
+        public UserService( IUserRepository userRepository )
         {
             _userRepository = userRepository;
-            _passwordService = passwordService;
         }
 
         public async Task<List<UserDto>> GetAllAsync()
@@ -35,7 +33,7 @@ namespace Application.Service
 
         public async Task AddAsync( UserRegistrationDto userRegistrationDto )
         {
-            User user = new User( userRegistrationDto.Name, userRegistrationDto.Login, _passwordService.HashPassword( userRegistrationDto.Password, RandomNumberGenerator.Create() ) );
+            User user = new User( userRegistrationDto.Name, userRegistrationDto.Login, userRegistrationDto.Password );
             await _userRepository.AddUserAsync( user );
         }
     }

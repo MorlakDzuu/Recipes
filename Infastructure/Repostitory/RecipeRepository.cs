@@ -1,4 +1,4 @@
-﻿using Domain.label;
+﻿using Domain.Label;
 using Domain.Recipe;
 using Domain.Tag;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +12,6 @@ namespace Infastructure.Repostitory
 {
     public class RecipeRepository : IRecipeRepository
     {
-        private const int PAGE_SIZE = 4;
         private readonly DbSet<Recipe> _recipesDbSet;
         private readonly DbSet<TagToRecipe> _tagToRecipesDbSet;
         private readonly DbSet<Tag> _tagsDbSet;
@@ -52,57 +51,59 @@ namespace Infastructure.Repostitory
             return await _recipesDbSet.Where( item => item.Id == id ).SingleOrDefaultAsync();
         }
 
-        public async Task<List<Recipe>> GetUsingPaginationAsync( int pageNumber )
+        public async Task<Recipe> GetRecipeOfDay()
         {
-            return await _recipesDbSet.Skip( PAGE_SIZE * ( pageNumber - 1 ) ).Take( PAGE_SIZE ).ToListAsync();
+            return await _recipesDbSet.OrderBy( item => item.Title ).FirstOrDefaultAsync();
         }
 
-        public async Task<List<Recipe>> GetUsingPaginationBySearchStringAsync( int pageNumber, string searchString )
+        public async Task<List<Recipe>> GetUsingPaginationAsync( 
+            int pageNumber, 
+            int pageSize, 
+            int? userId = null, 
+            string searchString = null, 
+            bool isFavorite = false )
         {
-            List<int> recipesIds = await _recipesDbSet.Join(
-                _tagToRecipesDbSet.DefaultIfEmpty(),
-                recipe => recipe.Id,
-                tagToRecipe => tagToRecipe.RecipeId,
-                ( recipe, tagToRecipe ) => new
-                {
-                    RecipeId = recipe.Id,
-                    Title = recipe.Title,
-                    TagId = tagToRecipe.TagId
-                } )
-                .Join(
-                _tagsDbSet.DefaultIfEmpty(),
-                combinedEntity => combinedEntity.TagId,
-                tag => tag.Id,
-                ( combinedEntity, tag ) => new
-                {
-                    RecipeId = combinedEntity.RecipeId,
-                    Title = combinedEntity.Title,
-                    TagName = tag.Name
-                } )
-                .Where( item => ( item.Title.Contains( searchString ) ) || ( item.TagName.Contains( searchString ) ) )
-                .Select( item => item.RecipeId )
-                .Distinct()
-                .Skip( PAGE_SIZE * ( pageNumber - 1 ) )
-                .Take( PAGE_SIZE )
-                .ToListAsync();
+            var query = _recipesDbSet.AsQueryable();
 
-            return await _recipesDbSet.Where( item => recipesIds.Contains( item.Id ) ).ToListAsync();
-        }
+            if ( userId != null )
+            {
+                query = query.Where( item => item.UserId == userId );
+            }
 
-        public async Task<List<Recipe>> GetFavoriteRecipesByUserIdAsync( int userId )
-        {
-            return await _labelDbSet
-               .Where( item => ( item.UserId == userId ) && ( item.Type == LabelTypes.Favorite ) )
-               .Join( _recipesDbSet,
-               favorite => favorite.RecipeId,
-               recipe => recipe.Id,
-               ( favorite, recipe ) => recipe )
-               .ToListAsync();
-        }
+            if ( searchString != null )
+            {
+                List<int> recipesIdsByTitle = await query
+                    .Where( item => item.Title.Contains( searchString ) )
+                    .Select( item => item.Id )
+                    .ToListAsync();
 
-        public async Task<List<Recipe>> GetUsingPaginationByUserIdAsync( int pageNumber, int userId )
-        {
-            return await _recipesDbSet.Where( item => item.UserId == userId ).Skip( PAGE_SIZE * ( pageNumber - 1 ) ).Take( PAGE_SIZE ).ToListAsync();
+                List<int> tagsIdsByName = await _tagsDbSet
+                    .Where( item => item.Name.Contains( searchString ) )
+                    .Select( item => item.Id )
+                    .ToListAsync();
+
+                List<int> recipesIdsByTag = await _tagToRecipesDbSet
+                    .Where( item => tagsIdsByName.Contains( item.TagId ) )
+                    .Select( item => item.RecipeId )
+                    .Distinct()
+                    .ToListAsync();
+
+                List<int> resultIds = recipesIdsByTitle
+                    .Concat( recipesIdsByTag )
+                    .Distinct()
+                    .ToList();
+
+                query = query.Where( item => resultIds.Contains( item.Id ) );
+            }
+
+            if ( isFavorite )
+            {
+                List<int> recipesIds = await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.Type == LabelTypes.Favorite ) ).Select( item => item.RecipeId ).ToListAsync();
+
+                query = query.Where( item => recipesIds.Contains( item.Id ) );
+            }
+
+            return await query.Skip( pageSize * ( pageNumber - 1 ) ).Take( pageSize ).ToListAsync();
         }
     }
 }

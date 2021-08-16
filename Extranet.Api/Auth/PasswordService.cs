@@ -13,6 +13,7 @@ namespace Application.Service
         public Task<ClaimsIdentity> GetIdentityAsync( string login, string password );
         public string HashPassword( string password, RandomNumberGenerator rng );
     }
+
     public class PasswordService : IPasswordService
     {
         const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
@@ -29,15 +30,14 @@ namespace Application.Service
         public async Task<ClaimsIdentity> GetIdentityAsync( string login, string password )
         {
             User user = await _userRepository.GetByLoginAsync( login );
+
             if ( user != null && VerifyHashedPassword( Convert.FromBase64String( user.Password ), password ) )
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login)
+                    new Claim( ClaimTypes.NameIdentifier, user.Id.ToString() )
                 };
-                ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity( claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                    ClaimsIdentity.DefaultRoleClaimType );
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity( claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType );
                 return claimsIdentity;
             }
 
