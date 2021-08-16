@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.7">
       <PrivateAssets>all</PrivateAssets>
@@ -28,9 +29,33 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\src\Новая папка1\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\src\Новая папка1\**" />
+    <EmbeddedResource Remove="ClientApp\src\Новая папка1\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\src\Новая папка1\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\src\entities\IngredientDto.ts" />
+    <None Remove="ClientApp\src\entities\RecipeCardDto.ts" />
+    <None Remove="ClientApp\src\entities\RecipeDto.ts" />
+    <None Remove="ClientApp\src\entities\StepDto.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ClientApp\src\app\recipe-service\" />
+    <Folder Include="ClientApp\src\assets\images\" />
+    <Folder Include="Files\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\entities\IngredientDto.ts" />
+    <TypeScriptCompile Include="ClientApp\src\entities\RecipeCardDto.ts" />
+    <TypeScriptCompile Include="ClientApp\src\entities\RecipeDto.ts" />
+    <TypeScriptCompile Include="ClientApp\src\entities\StepDto.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

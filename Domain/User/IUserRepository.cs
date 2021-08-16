@@ -11,5 +11,6 @@ namespace Domain.User
         public Task<User> GetAsync( int id );
         public Task<List<User>> GetAllAsync();
         public Task AddUserAsync( User user );
+        public Task<User> GetByLoginAsync( string login );
     }
 }

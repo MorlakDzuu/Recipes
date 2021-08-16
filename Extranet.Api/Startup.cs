@@ -10,6 +10,13 @@ using Application.Service;
 using Infastructure;
 using Microsoft.EntityFrameworkCore;
 using Domain.Recipe;
+using Domain.Tag;
+using Domain.Label;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Extranet.Api.Auth;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace Extranet.API
 {
@@ -33,11 +40,40 @@ namespace Extranet.API
             services.AddScoped<IRecipeRepository, RecipeRepository>();
             services.AddScoped<IRecipeService, RecipeService>();
 
+            services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<ITagService, TagService>();
+
+            services.AddScoped<ILabelRepository, LabelRepository>();
+
+            services.AddScoped<IPasswordService, PasswordService>();
+
+            services.AddDbContext<ApplicationContext>( options => options.UseNpgsql( Configuration.GetSection( "ConnectionString" ).Value ) );
             services.AddScoped<IUnitOfWork>( sp => sp.GetService<ApplicationContext>() );
-            
-            services.AddDbContext<ApplicationContext>(
-            options =>
-                options.UseNpgsql( Configuration.GetSection( "ConnectionString" ).Value ));
+
+            services.AddSession( options => {
+                options.IdleTimeout = TimeSpan.FromMinutes( 15 );
+            } );
+
+            services.AddAuthentication( auth =>
+            {
+                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            } )
+                    .AddJwtBearer( options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.SaveToken = true;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidIssuer = AuthOptions.ISSUER,
+                            ValidateAudience = true,
+                            ValidAudience = AuthOptions.AUDIENCE,
+                            ValidateLifetime = true,
+                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                            ValidateIssuerSigningKey = true,
+                        };
+                    } );
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles( configuration =>
@@ -65,13 +101,22 @@ namespace Extranet.API
             }
 
             app.UseRouting();
+            app.UseSession();
 
-            app.UseEndpoints( endpoints =>
+            app.Use( async ( context, next ) =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                var JWToken = context.Session.GetString( "JWToken" );
+                if ( !string.IsNullOrEmpty( JWToken ) )
+                {
+                    context.Request.Headers.Add( "Authorization", "Bearer " + JWToken );
+                }
+                await next();
             } );
+
+            app.UseAuthorization();
+            app.UseAuthentication();
+
+            app.UseEndpoints( endpoints => { endpoints.MapControllers(); } );
 
             app.UseSpa( spa =>
             {

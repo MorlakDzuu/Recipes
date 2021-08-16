@@ -14,16 +14,7 @@ namespace Domain.User
         public string Description { get; set; }
         public string Password { get; set; }
 
-        public User( int id, string name, string login, string description, string password )
-        {
-            Id = id;
-            Name = name;
-            Login = login;
-            Description = description;
-            Password = password;
-        }
-
-        public User( string name, string login, string description, string password )
+        public User( string name, string login, string password, string description = null )
         {
             Name = name;
             Login = login;

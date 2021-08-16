@@ -23,6 +23,9 @@ namespace Infastructure
         {
             modelBuilder.ApplyConfiguration( new UserConiguration() );
             modelBuilder.ApplyConfiguration( new RecipeConfiguration() );
+            modelBuilder.ApplyConfiguration( new TagConfiguration() );
+            modelBuilder.ApplyConfiguration( new TagToRecipeConfiguration() );
+            modelBuilder.ApplyConfiguration( new LabelConfiguration() );
         }
     }
 }

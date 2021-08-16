@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210729192854_Initial")]
+    [Migration("20210810220117_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,9 +22,11 @@ namespace Infastructure.Migrations
 
             modelBuilder.Entity("Domain.Recipe.Recipe", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("CookingTime")
                         .HasColumnType("integer")
@@ -36,6 +38,10 @@ namespace Infastructure.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("description");
 
+                    b.Property<string>("Ingredients")
+                        .HasColumnType("text")
+                        .HasColumnName("ingredients");
+
                     b.Property<string>("PhotoUrl")
                         .IsRequired()
                         .HasColumnType("text")
@@ -46,7 +52,8 @@ namespace Infastructure.Migrations
                         .HasColumnName("portions_count");
 
                     b.Property<string>("Stages")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("stages");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -63,6 +70,43 @@ namespace Infastructure.Migrations
                     b.ToTable("Recipe");
                 });
 
+            modelBuilder.Entity("Domain.Tag.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Tag");
+                });
+
+            modelBuilder.Entity("Domain.Tag.TagToRecipe", b =>
+                {
+                    b.Property<int>("TagId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tag_id");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.HasKey("TagId", "RecipeId");
+
+                    b.ToTable("TagToRecipe");
+                });
+
             modelBuilder.Entity("Domain.User.User", b =>
                 {
                     b.Property<int>("Id")
@@ -72,7 +116,6 @@ namespace Infastructure.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)")
                         .HasColumnName("description");
@@ -91,8 +134,7 @@ namespace Infastructure.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("text")
                         .HasColumnName("password");
 
                     b.HasKey("Id");
@@ -100,7 +142,26 @@ namespace Infastructure.Migrations
                     b.HasIndex("Login")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
+                });
+
+            modelBuilder.Entity("Domain.label.Label", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
+
+                    b.HasKey("UserId", "RecipeId", "Type");
+
+                    b.ToTable("Label");
                 });
 #pragma warning restore 612, 618
         }
