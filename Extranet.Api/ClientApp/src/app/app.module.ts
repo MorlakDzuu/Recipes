@@ -4,18 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { RecipeOfTheDayComponent } from './home/recipe-of-the-day/recipe-of-the-day.component';
-import { SearchRecipesComponent } from './home/search-recipes/search-recipes.component';
-import { SortingByTagsComponent } from './home/sorting-by-tags/sorting-by-tags.component';
-import { FooterComponent } from './footer/footer.component';
-import { HomeComponent } from './home/home.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
+import { RecipeOfDayComponent } from './pages/home/recipe-of-day/recipe-of-day.component';
+import { SearchRecipesComponent } from './pages/home/search-recipes/search-recipes.component';
+import { SortingByTagsComponent } from './pages/home/sorting-by-tags/sorting-by-tags.component';
+import { FooterComponent } from './layout/footer/footer.component';
+import { HomeComponent } from './pages/home/home.component';
+import { NavMenuComponent } from './layout/nav-menu/nav-menu.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatMenuModule } from '@angular/material/menu';
-import { LoggedInComponent } from './nav-menu/logged-in/logged-in.component';
-import { LoginButtonComponent } from './nav-menu/login-button/login-button.component';
+import { LoggedInComponent } from './layout/nav-menu/logged-in/logged-in.component';
+import { LoginButtonComponent } from './layout/nav-menu/login-button/login-button.component';
 
 
 @NgModule({
@@ -24,13 +22,11 @@ import { LoginButtonComponent } from './nav-menu/login-button/login-button.compo
     NavMenuComponent,
     HomeComponent,
     FooterComponent,
-    CounterComponent,
     SortingByTagsComponent,
-    RecipeOfTheDayComponent,
+    RecipeOfDayComponent,
     SearchRecipesComponent,
     LoggedInComponent,
-    LoginButtonComponent,
-    FetchDataComponent
+    LoginButtonComponent
   ],
   imports: [
     BrowserModule,
@@ -41,9 +37,7 @@ import { LoginButtonComponent } from './nav-menu/login-button/login-button.compo
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+      { path: '', component: HomeComponent, pathMatch: 'full' }
     ]),
     BrowserAnimationsModule
   ],
