@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { RecipeCardDto } from '../../../entities/RecipeCardDto';
-import { RecipeService } from '../../recipe-service/recipe.service';
+import { RecipeCard } from '../../../models/RecipeCard';
+import { RecipeService } from '../../../services/recipe.service';
 
 @Component({
   selector: 'recipe-of-day',
@@ -9,7 +9,8 @@ import { RecipeService } from '../../recipe-service/recipe.service';
 })
 
 export class RecipeOfDayComponent implements OnInit {
-  public card!: RecipeCardDto;
+  public card: RecipeCard;
+
   constructor(private recipeService: RecipeService) {
   }
 

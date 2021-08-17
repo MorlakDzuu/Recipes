@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { RecipeCardDto } from '../../entities/RecipeCardDto';
+import { RecipeCard } from '../models/RecipeCard';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,11 +8,11 @@ import { Observable } from 'rxjs';
 })
 export class RecipeService {
 
-  private recipeOdDayUrl = "recipe/feed/recipeOfDay";
+  private recipeOdDayUrl: string = "recipe/feed/recipeOfDay";
 
   constructor(private http: HttpClient) { }
 
-  getRecipeOfDay(): Observable<RecipeCardDto> {
-    return this.http.get<RecipeCardDto>(this.recipeOdDayUrl);
+  getRecipeOfDay(): Observable<RecipeCard> {
+    return this.http.get<RecipeCard>(this.recipeOdDayUrl);
   }
 }

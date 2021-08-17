@@ -33,13 +33,13 @@
 
 .recipe_like:hover::before
 {
-    content: url('../../../images/like_red.svg');
+    content: url('../../../../images/like_red.svg');
     cursor: pointer;
 }
 
 .recipe_like::before
 {
-    content: url('../../../images/like.svg');
+    content: url('../../../../images/like.svg');
     width: 22px;
     height: 20px;
     position: absolute;
@@ -61,7 +61,7 @@
 
 .recipe_time::before
 {
-    content: url('../../../images/day_recipe_time.svg');
+    content: url('../../../../images/day_recipe_time.svg');
     width: 20px;
     height: 22px;
     position: absolute;
@@ -83,7 +83,7 @@
 
 .recipe_title::before
 {
-    content: url('../../../images/day_recipe_icon.svg');
+    content: url('../../../../images/day_recipe_icon.svg');
     width: 50px;
     height: 50px;
     position: absolute;

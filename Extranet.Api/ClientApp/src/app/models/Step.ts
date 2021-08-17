@@ -1,4 +1,4 @@
-export interface StepDTO {
+export interface Step {
   number: number;
   description: string;
 }

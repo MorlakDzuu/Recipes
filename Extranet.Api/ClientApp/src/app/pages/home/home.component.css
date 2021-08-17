@@ -1,6 +1,6 @@
 .image-background
 {
-  content: url('../../images/header_image.svg');
+  content: url('../../../images/header_image.svg');
   position: absolute;
   right: 0px;
   top: 0px;

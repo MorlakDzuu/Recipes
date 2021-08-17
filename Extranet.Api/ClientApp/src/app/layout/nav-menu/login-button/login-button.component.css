@@ -1,6 +1,6 @@
 .item::before
 {
-    content: url("../../../images/login_icon.svg");
+    content: url("../../../../images/login_icon.svg");
     width: 38px;
     height: 38px;
     position: absolute;

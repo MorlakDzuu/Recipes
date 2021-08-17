@@ -86,7 +86,7 @@
 
 .card_simple::before
 {
-  content: url('../../../images/simple_recipe_icon.svg');
+  content: url('../../../../images/simple_recipe_icon.svg');
   background-color: #FFEFCC;
   width: 24px;
   height: 24px;
@@ -98,7 +98,7 @@
 
 .card_baby::before
 {
-    content: url('../../../images/baby_recipe_icon.svg');
+    content: url('../../../../images/baby_recipe_icon.svg');
     background-color: #FFEFCC;
     width: 24px;
     height: 24px;
@@ -110,7 +110,7 @@
 
 .card_chef::before
 {
-    content: url('../../../images/chef_recipe_icon.svg');
+    content: url('../../../../images/chef_recipe_icon.svg');
     background-color: #FFEFCC;
     width: 24px;
     height: 24px;
@@ -122,7 +122,7 @@
 
 .card_party::before
 {
-    content: url('../../../images/party_recipe_icon.svg');
+    content: url('../../../../images/party_recipe_icon.svg');
     background-color: #FFEFCC;
     width: 24px;
     height: 24px;

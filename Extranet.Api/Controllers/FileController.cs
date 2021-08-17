@@ -12,13 +12,6 @@ namespace Extranet.Api.Controllers
     [Route( "[controller]" )]
     public class FileController : Controller
     {
-        private readonly IWebHostEnvironment _appEnvironment;
-
-        public FileController( IWebHostEnvironment appEnvironment )
-        {
-            _appEnvironment = appEnvironment;
-        }
-
         [HttpPost, Route( "upload" )]
         public async Task<string> UploadFile( IFormFile uploadedFile )
         {
@@ -40,7 +33,7 @@ namespace Extranet.Api.Controllers
         [HttpGet, Route( "download/{filename}" )]
         public async Task<IActionResult> DownloadFile( string filename )
         {
-            string filePath = System.IO.Directory.GetCurrentDirectory() + "/Files/" + filename;
+            string filePath = Directory.GetCurrentDirectory() + "/Files/" + filename;
             var bytes = await System.IO.File.ReadAllBytesAsync( filePath );
             return File( bytes, "image/" + filename.Split( '.' )[ 1 ] );
         }
