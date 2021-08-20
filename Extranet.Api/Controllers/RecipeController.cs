@@ -50,53 +50,88 @@ namespace Extranet.Api.Controllers
             await _unitOfWork.Commit();
         }
 
-        [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "get/{recipeId}" )]
         public async Task<RecipePageDto> Get( int recipeId )
         {
             //TODO: add user id
-            int userId = 1;
+            int userId = 0;
 
             return await _recipeService.GetRecipeById( recipeId, userId );
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "like/add/{recipeId}" )]
-        public async Task AddLike( int recipeId )
+        public async Task<IActionResult> AddLike( int recipeId )
         {
             int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
 
-            await _labelRepository.AddLikeAsync( userId, recipeId );
-            await _unitOfWork.Commit();
+            try
+            {
+                await _labelRepository.AddLikeAsync( userId, recipeId );
+                await _unitOfWork.Commit();
+
+                return Ok( "success" );
+            }
+            catch ( Exception )
+            {
+                return BadRequest( "error" );
+            }
         }
 
+        [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "favorite/add/{recipeId}" )]
-        public async Task AddFavorite( int recipeId )
+        public async Task<IActionResult> AddFavorite( int recipeId )
         {
             int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
 
-            await _labelRepository.AddFavoriteAsync( userId, recipeId );
-            await _unitOfWork.Commit();
+            try
+            {
+                await _labelRepository.AddFavoriteAsync( userId, recipeId );
+                await _unitOfWork.Commit();
+
+                return Ok( "success" );
+            }
+            catch ( Exception )
+            {
+                return BadRequest( "error" );
+            }
         }
 
+        [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "like/delete/{recipeId}" )]
-        public async Task DeleteLike( int recipeId )
+        public async Task<IActionResult> DeleteLike( int recipeId )
         {
-            //TODO: add user id
-            int userId = 1;
-
-            await _recipeService.DeleteLikeByUserAsync( userId, recipeId );
-            await _unitOfWork.Commit();
+            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            try
+            {
+                await _recipeService.DeleteLikeByUserAsync( userId, recipeId );
+                await _unitOfWork.Commit();
+                
+                return Ok( "success" );
+            }
+            catch ( Exception )
+            {
+                return BadRequest( "error" );
+            }
         }
 
+        [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "favorite/delete/{recipeId}" )]
-        public async Task DeleteFavorite( int recipeId )
+        public async Task<IActionResult> DeleteFavorite( int recipeId )
         {
-            //TODO: add user id
-            int userId = 1;
+            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
 
-            await _recipeService.DeleteFavoriteByUserAsync( userId, recipeId );
-            await _unitOfWork.Commit();
+            try
+            {
+                await _recipeService.DeleteFavoriteByUserAsync( userId, recipeId );
+                await _unitOfWork.Commit();
+
+                return Ok( "success" );
+            }
+            catch ( Exception )
+            {
+                return BadRequest( "error" );
+            }
         }
 
         [HttpPost, Route( "edit/{recipeId}" )]

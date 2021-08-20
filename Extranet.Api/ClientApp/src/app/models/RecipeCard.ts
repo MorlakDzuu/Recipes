@@ -9,4 +9,6 @@ export interface RecipeCard {
   likesCount: number;
   tags: string[];
   isLiked: boolean;
+  isFavorite: boolean;
+  authorLogin: string;
 }

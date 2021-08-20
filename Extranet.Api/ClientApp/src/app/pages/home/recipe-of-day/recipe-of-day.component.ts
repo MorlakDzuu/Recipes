@@ -17,7 +17,6 @@ export class RecipeOfDayComponent implements OnInit {
   ngOnInit(): void {
     this.recipeService.getRecipeOfDay().subscribe(val => {
       this.card = val;
-      console.log(val);
     });
   }
 

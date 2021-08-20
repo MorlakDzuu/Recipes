@@ -9,6 +9,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 export class LoggedInComponent implements OnInit {
 
   @Output() myEvent = new EventEmitter<boolean>();
+  name: string;
 
   toggleLoginStatus(_isLogIn: any) {
       this.myEvent.emit(_isLogIn);
@@ -17,6 +18,7 @@ export class LoggedInComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.name = localStorage.getItem("userName");
   }
 
 }

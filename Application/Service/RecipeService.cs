@@ -2,6 +2,7 @@
 using Application.Dto.Recipe;
 using Domain.Label;
 using Domain.Recipe;
+using Domain.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,20 +20,23 @@ namespace Application.Service
 
     public class RecipeService : IRecipeService
     {
-        private const int PAGE_SIZE = 4;
+        private const int PAGE_SIZE = 1;
 
         private readonly IRecipeRepository _recipeRepository;
         private readonly ITagService _tagService;
         private readonly ILabelRepository _labelRepository;
+        private readonly IUserRepository _userRepository;
 
         public RecipeService(
             IRecipeRepository recipeRepository,
             ITagService tagService,
-            ILabelRepository labelRepository )
+            ILabelRepository labelRepository,
+            IUserRepository userRepository )
         {
             _recipeRepository = recipeRepository;
             _tagService = tagService;
             _labelRepository = labelRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<Recipe> AddRecipeAsync( RecipeDto recipeDto, int userId )
@@ -62,7 +66,7 @@ namespace Application.Service
             {
                 Title = recipe.Title,
                 Description = recipe.Description,
-                CookingTime = recipe.CookingTime,
+                CookingDuration = recipe.CookingTime,
                 PortionsCount = recipe.PortionsCount,
                 FavoritesCount = favoritesCount,
                 LikesCount = likesCount,
@@ -136,6 +140,8 @@ namespace Application.Service
                 int favoritesCount = await _labelRepository.GetFavoriteCountByRecipeIdAsync( recipe.Id );
                 int likesCount = await _labelRepository.GetLikeCountByRecipeIdAsync( recipe.Id );
                 bool isLiked = await _labelRepository.IsRecipeLikedByUser( recipe.Id, userId );
+                bool isFavorite = await _labelRepository.IsRecipeFavoriteByUser( recipe.Id, userId );
+                string authorLogin = await _userRepository.GetLoginByRecipeId( recipe.Id );
 
                 RecipeFeedDto recipeFeedDto = new RecipeFeedDto()
                 {
@@ -148,7 +154,9 @@ namespace Application.Service
                     Tags = tags,
                     FavoritesCount = favoritesCount,
                     LikesCount = likesCount,
-                    IsLiked = isLiked
+                    IsLiked = isLiked,
+                    IsFavorite = isFavorite,
+                    AuthorLogin = authorLogin
                 };
 
                 recipeFeedDtos.Add( recipeFeedDto );

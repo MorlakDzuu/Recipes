@@ -15,5 +15,6 @@ namespace Domain.Label
         public Task<int> GetFavoriteCountByRecipeIdAsync( int recipeId );
         public Task<int> GetLikeCountByRecipeIdAsync( int recipeId );
         public Task<bool> IsRecipeLikedByUser( int recipeId, int userId );
+        public Task<bool> IsRecipeFavoriteByUser( int recipeId, int userId );
     }
 }

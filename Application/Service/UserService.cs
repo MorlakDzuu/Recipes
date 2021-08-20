@@ -1,11 +1,6 @@
 ﻿using Application.Dto;
 using Domain.User;
-using Infastructure;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Service
@@ -14,6 +9,7 @@ namespace Application.Service
     {
         public Task<List<UserDto>> GetAllAsync();
         public Task AddAsync( UserRegistrationDto userRegistrationDto );
+        public Task<UserDto> GetByLoginAsync( string login );
     }
 
     public class UserService : IUserService
@@ -35,6 +31,17 @@ namespace Application.Service
         {
             User user = new User( userRegistrationDto.Name, userRegistrationDto.Login, userRegistrationDto.Password );
             await _userRepository.AddUserAsync( user );
+        }
+
+        public async Task<UserDto> GetByLoginAsync( string login )
+        {
+            User user = await _userRepository.GetByLoginAsync( login );
+            return new UserDto()
+            {
+                Name = user.Name,
+                Login = user.Login,
+                Description = user.Description
+            };  
         }
     }
 }

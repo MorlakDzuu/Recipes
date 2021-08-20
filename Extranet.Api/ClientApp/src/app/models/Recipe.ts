@@ -8,8 +8,8 @@ export interface Recipe {
   author: string;
   likes: number;
   favourites: number;
-  timeMinutes: number;
-  numberOfPersons: number;
+  cookingDuration: number;
+  portionsCount: number;
   tags: string[];
   photo: string;
   ingredients: Ingredient[];

@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Domain.User;
+using Extranet.Api.Auth;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.IdentityModel.Tokens;
+
 namespace Application.Service
 {
     public interface IPasswordService
@@ -56,6 +60,28 @@ namespace Application.Service
             Buffer.BlockCopy( subkey, 0, outputBytes, 1 + SaltSize, Pbkdf2SubkeyLength );
 
             return Convert.ToBase64String( outputBytes );
+        }
+
+        public bool ValidateCurrentToken( string token )
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                tokenHandler.ValidateToken( token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = AuthOptions.ISSUER,
+                    ValidAudience = AuthOptions.AUDIENCE,
+                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+                }, out SecurityToken validatedToken );  
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
         }
 
         private bool VerifyHashedPassword( byte[] hashedPassword, string password )

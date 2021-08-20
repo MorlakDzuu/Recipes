@@ -49,6 +49,15 @@ namespace Infastructure.Repostitory
             return true;
         }
 
+        public async Task<bool> IsRecipeFavoriteByUser(int recipeId, int userId)
+        {
+            Label label = await _labelDbSet.Where( item => ( item.RecipeId == recipeId ) && ( item.UserId == userId ) && ( item.Type == LabelTypes.Favorite ) ).SingleOrDefaultAsync();
+
+            if ( label == null )
+                return false;
+            return true;
+        }
+
         public async Task DeleteFavoriteAsync( int userId, int recipeId )
         {
             Label label = await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.RecipeId == recipeId ) && ( item.Type == LabelTypes.Favorite ) ).SingleOrDefaultAsync();

@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Extranet.Api.Auth;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Threading.Tasks;
 
 namespace Extranet.API
 {
@@ -72,6 +73,23 @@ namespace Extranet.API
                             ValidateLifetime = true,
                             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
                             ValidateIssuerSigningKey = true,
+                        };
+
+                        options.Events = new JwtBearerEvents()
+                        {
+                            OnAuthenticationFailed = c =>
+                            {
+                                c.NoResult();
+                                c.Response.StatusCode = 500;
+                                c.Response.ContentType = "text/plain";
+                                c.Response.WriteAsync( "Не удалось аутентифицировать пользователя" ).Wait();
+                                return Task.CompletedTask;
+                            },
+                            OnChallenge = c =>
+                            {
+                                c.HandleResponse();
+                                return Task.CompletedTask;
+                            }
                         };
                     } );
 

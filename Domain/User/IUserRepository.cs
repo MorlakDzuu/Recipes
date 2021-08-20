@@ -12,5 +12,6 @@ namespace Domain.User
         public Task<List<User>> GetAllAsync();
         public Task AddUserAsync( User user );
         public Task<User> GetByLoginAsync( string login );
+        public Task<string> GetLoginByRecipeId( int id );
     }
 }

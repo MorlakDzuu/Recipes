@@ -29,12 +29,21 @@ namespace Extranet.Api.Controllers
         }
 
         [HttpPost, Route( "register" )]
-        public async Task Register( [FromBody] UserRegistrationDto userRegistrationDto )
+        public async Task<IActionResult> Register( [FromBody] UserRegistrationDto userRegistrationDto )
         {
-            userRegistrationDto.Password = _passwordService.HashPassword( userRegistrationDto.Password, RandomNumberGenerator.Create() );
+            try
+            {
+                userRegistrationDto.Password = _passwordService.HashPassword( userRegistrationDto.Password, RandomNumberGenerator.Create() );
 
-            await _userService.AddAsync( userRegistrationDto );
-            await _unitOfWork.Commit();
+                await _userService.AddAsync( userRegistrationDto );
+                await _unitOfWork.Commit();
+            }
+            catch ( Exception )
+            {
+                return BadRequest( new { message = "Не получилось зарегестрировать пользователя" } );
+            }
+
+            return Ok();
         }
 
         [HttpPost, Route( "login" )]
@@ -44,7 +53,7 @@ namespace Extranet.Api.Controllers
 
             if ( identity == null )
             {
-                return BadRequest( new { errorText = "Неправильное имя пользователя или пароль." } );
+                return BadRequest( new { message = "Неправильное имя пользователя или пароль." } );
             }
 
             var now = DateTime.UtcNow;
@@ -58,20 +67,32 @@ namespace Extranet.Api.Controllers
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken( jwt );
 
             HttpContext.Session.SetString( "JWToken", encodedJwt );
-            var response = new
+
+            UserDto userDto = await _userService.GetByLoginAsync( userLoginDto.Login );
+
+            var userSettings = new
             {
-                access_token = encodedJwt
+                name = userDto.Name,
+                login = userDto.Login,
+                token = encodedJwt
             };
 
-            return Json( response );
+            return Ok( userSettings );
         }
 
-        [HttpGet, Route("logout")]
+        [HttpGet, Route( "logout" )]
         [Authorize( AuthenticationSchemes = "Bearer" )]
         public IActionResult Logoff()
         {
             HttpContext.Session.Clear();
             return Ok();
+        }
+
+        [HttpGet, Route( "verify" )]
+        [Authorize( AuthenticationSchemes = "Bearer" )]
+        public IActionResult VerifyToken()
+        {
+            return Ok( "token работает" );
         }
     }
 }

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { UserLogin } from '../../models/user-login';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'nav-menu',
@@ -9,11 +11,17 @@ export class NavMenuComponent implements OnInit {
 
   isLogIn: boolean = false;
 
-  toggleLoginStatus(_isLogIn: any) {
-    this.isLogIn = !_isLogIn;
-  }
+  constructor(private userService: UserService) {}
 
-  constructor() { }
+  async toggleLoginStatus(_isLogIn: any) {
+    var userLogin = new UserLogin();
+    userLogin.login = "danil228";
+    userLogin.password = "123456";
+
+    this.userService.userLogin(userLogin).then(() => {
+      this.isLogIn = !_isLogIn;
+    });
+  }
 
   ngOnInit(): void {
   }
