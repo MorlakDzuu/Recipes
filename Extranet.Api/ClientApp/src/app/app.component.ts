@@ -11,8 +11,12 @@ export class AppComponent {
 
   ngOnInit() {
     if (localStorage.getItem("userName") != null) {
-      console.log(localStorage.getItem("userName"));
-      this.userService.userVerifyToken();
+      this.userService.userVerifyToken().subscribe(data => {
+        if (data.status != 403) {
+          localStorage.removeItem("userName");
+          localStorage.removeItem("token");
+        }
+      });;
     }
   }
 }

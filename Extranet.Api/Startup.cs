@@ -80,7 +80,7 @@ namespace Extranet.API
                             OnAuthenticationFailed = c =>
                             {
                                 c.NoResult();
-                                c.Response.StatusCode = 500;
+                                c.Response.StatusCode = 403;
                                 c.Response.ContentType = "text/plain";
                                 c.Response.WriteAsync( "Не удалось аутентифицировать пользователя" ).Wait();
                                 return Task.CompletedTask;

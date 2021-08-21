@@ -18,7 +18,9 @@ export class NavMenuComponent implements OnInit {
     userLogin.login = "danil228";
     userLogin.password = "123456";
 
-    this.userService.userLogin(userLogin).then(() => {
+    this.userService.userLogin(userLogin).subscribe(data => {
+      localStorage.setItem("userName", data.name);
+      localStorage.setItem("token", data.token);
       this.isLogIn = !_isLogIn;
     });
   }

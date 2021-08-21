@@ -9,42 +9,42 @@ import { Recipe } from '../models/Recipe';
 })
 export class RecipeService {
 
-  private recipeOdDayUrl: string = "recipe/feed/recipeOfDay";
-  private recipeFeedUrl: string = "recipe/feed/";
-  private recipePageUrl: string = "recipe/get/";
-
-  private recipeAddLikeUrl: string = "recipe/like/add/";
-  private recipeAddFavoriteUrl: string = "recipe/favorite/add/";
-  private recipeDeleteLikeUrl: string = "recipe/like/delete/";
-  private recipeDeleteFavoriteUrl: string = "recipe/favorite/delete/";
+  private basePath: string = "recipe/";
 
   constructor(private http: HttpClient) { }
 
   getRecipeOfDay(): Observable<RecipeCard> {
-    return this.http.get<RecipeCard>(this.recipeOdDayUrl);
+    var path: string = this.basePath + "feed/recipeOfDay";
+    return this.http.get<RecipeCard>(path);
   }
 
   getRecipeFeed(pageNumber: number): Observable<RecipeCard[]> {
-    return this.http.get<RecipeCard[]>(this.recipeFeedUrl + pageNumber);
+    var path: string = this.basePath + "feed/" + pageNumber;
+    return this.http.get<RecipeCard[]>(path);
   }
 
   getRecipeById(recipeId: number): Observable<Recipe> {
-    return this.http.get<Recipe>(this.recipePageUrl + recipeId);
+    var path: string = this.basePath + "get/" + recipeId;
+    return this.http.get<Recipe>(path);
   }
 
   async addLikeToRecipe(recipeId: number) {
-    this.http.get(this.recipeAddLikeUrl + recipeId, { observe: 'response' }).subscribe(data => console.log(data));
+    var path: string = this.basePath + "like/add/" + recipeId;
+    this.http.get(path, { observe: 'response' }).subscribe(data => console.log(data));
   }
 
   async addFavoriteToRecipe(recipeId: number) {
-    this.http.get(this.recipeAddFavoriteUrl + recipeId, { observe: 'response' }).subscribe(data => console.log(data));
+    var path: string = this.basePath + "favorite/add/" + recipeId;
+    this.http.get(path, { observe: 'response' }).subscribe(data => console.log(data));
   }
 
   async deleteLikeToRecipe(recipeId: number) {
-    this.http.get(this.recipeDeleteLikeUrl + recipeId, { observe: 'response' }).subscribe(data => console.log(data));
+    var path: string = this.basePath + "like/delete/" + recipeId;
+    this.http.get(path, { observe: 'response' }).subscribe(data => console.log(data));
   }
 
   async deleteFavoriteToRecipe(recipeId: number) {
-    this.http.get(this.recipeDeleteFavoriteUrl + recipeId, { observe: 'response' }).subscribe(data => console.log(data));
+    var path: string = this.basePath + "favorite/delete/" + recipeId;
+    this.http.get(path, { observe: 'response' }).subscribe(data => console.log(data));
   }
 }

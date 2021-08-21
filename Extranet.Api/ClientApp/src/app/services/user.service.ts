@@ -1,3 +1,4 @@
+import { HttpResponse } from '@angular/common/http';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
@@ -10,40 +11,27 @@ import { UserSettings } from '../models/user-settings';
 })
 export class UserService {
 
-  private userLoginUrl: string = "user/login";
-  private userRegisterUrl: string = "user/register";
-  private userVerifyUrl: string = "user/verify"
+  private basePath: string = "user/";
 
   constructor(private http: HttpClient) { }
 
-  public async userLogin(user: UserLogin) {
-    try {
-      this.http.post<UserSettings>(this.userLoginUrl, user).subscribe(val => {
-        console.log(val);
-        localStorage.setItem("userName", val.name);
-        localStorage.setItem("token", val.token);
-      });
-
-    } catch (error) {
-      console.log(error.message);
-    }
+  public userLogin(user: UserLogin): Observable<UserSettings> {
+    var path: string = this.basePath + "login";
+    return this.http.post<UserSettings>(path, user);
   }
 
   public userRegister(user: UserRegister) {
+    var path: string = this.basePath + "register";
     try {
-      this.http.post(this.userRegisterUrl, user);
+      this.http.post(path, user);
     } catch (error) {
       console.log(error.message);
     }
   }
 
   public userVerifyToken() {
-    this.http.get(this.userVerifyUrl, { observe: 'response' }).subscribe(data => {
-      if (data.status != 500) {
-        localStorage.removeItem("userName");
-        localStorage.removeItem("token");
-      }
-    });
+    var path: string = this.basePath + "verify";
+    return this.http.get(path, { observe: 'response' });
   }
 
   public isLoggedIn(): boolean {
