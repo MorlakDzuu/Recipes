@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { UserService } from '../../../services/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-recipe-add-button',
@@ -7,9 +10,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RecipeAddButtonComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router, private userService: UserService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
+  }
+
+  addRecipe() {
+    console.log(this.userService.isLoggedIn());
+    if (this.userService.isLoggedIn()) {
+      this.router.navigate(['/recipeadd']);
+    } else {
+      this.snackBar.open("Вы незарегестрированны!", "", { duration: 2000, verticalPosition: 'top', horizontalPosition: "right" });
+    }
   }
 
 }

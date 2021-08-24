@@ -38,23 +38,34 @@ namespace Extranet.Api.Controllers
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpPost, Route( "add" )]
-        public async Task AddRecipe( [FromBody] RecipeDto recipeDto )
+        public async Task<IActionResult> AddRecipe( [FromBody] RecipeDto recipeDto )
         {
             int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
 
-            Recipe recipe = await _recipeService.AddRecipeAsync( recipeDto, userId );
-            await _tagService.AddNewTagsAsync( recipeDto.Tags );
-            await _unitOfWork.Commit();
+            try
+            {
+                Recipe recipe = await _recipeService.AddRecipeAsync( recipeDto, userId );
+                await _tagService.AddNewTagsAsync( recipeDto.Tags );
+                await _unitOfWork.Commit();
 
-            await _tagService.AddTagsToRecipeAsync( recipeDto.Tags, recipe.Id );
-            await _unitOfWork.Commit();
+                await _tagService.AddTagsToRecipeAsync( recipeDto.Tags, recipe.Id );
+                await _unitOfWork.Commit();
+
+                return Ok();
+            } catch (Exception)
+            {
+                return BadRequest("Error");
+            }
         }
 
         [HttpGet, Route( "get/{recipeId}" )]
         public async Task<RecipePageDto> Get( int recipeId )
         {
-            //TODO: add user id
             int userId = 0;
+            if ( User.Identity.IsAuthenticated )
+            {
+                userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            }
 
             return await _recipeService.GetRecipeById( recipeId, userId );
         }
@@ -166,8 +177,11 @@ namespace Extranet.Api.Controllers
         [HttpGet, Route( "feed/{pageNumber}" )]
         public async Task<List<RecipeFeedDto>> GetFeed( int pageNumber )
         {
-            //TODO: add userId
-            int userId = 1;
+            int userId = 0;
+            if ( User.Identity.IsAuthenticated )
+            {
+                userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            }
 
             return await _recipeService.GetRecipesFeedAsync( pageNumber, userId );
         }
@@ -175,26 +189,29 @@ namespace Extranet.Api.Controllers
         [HttpGet, Route( "feed/search/{pageNumber}" )]
         public async Task<List<RecipeFeedDto>> GetFeedBySearchString( int pageNumber, string search )
         {
-            //TODO: add userId
-            int userId = 1;
+            int userId = 0;
+            if ( User.Identity.IsAuthenticated )
+            {
+                userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            }
 
             return await _recipeService.GetRecipesFeedAsync( pageNumber, userId, searchString: search );
         }
 
+        [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "feed/user/{pageNumber}" )]
         public async Task<List<RecipeFeedDto>> GetUserFeed( int pageNumber )
         {
-            //TODO: add userId
-            int userId = 1;
+            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
 
             return await _recipeService.GetRecipesFeedAsync( pageNumber, userId, orderByUser: true );
         }
 
+        [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "feed/favorite/{pageNumber}" )]
         public async Task<List<RecipeFeedDto>> GetFavorites( int pageNumber )
         {
-            //TODO: add userId
-            int userId = 1;
+            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
 
             return await _recipeService.GetRecipesFeedAsync( pageNumber, userId, orderByFavorite: true );
         }
@@ -203,6 +220,10 @@ namespace Extranet.Api.Controllers
         public async Task<RecipeFeedDto> GetRecipeOfDay()
         {
             int userId = 0;
+            if ( User.Identity.IsAuthenticated )
+            {
+                userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            }
 
             return await _recipeService.GetRecipeOfDay( userId );
         }

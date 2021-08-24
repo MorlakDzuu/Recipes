@@ -1,24 +1,24 @@
 <div class="recipe">
-  <a class="back" routerLink="/recipe">Назад</a>
+  <a class="back" (click)="goBack()">Назад</a>
   <div class="title">
-    <span class="title_text">{{recipe.name}}</span>
+    <span class="title_text">{{recipe.title}}</span>
     <div class="buttons">
       <a class="title_button title_button_delete"></a>
       <a class="title_button title_button_edit">Редактировать</a>
     </div>
   </div>
-  <app-recipe-card class="card" [card]="recipe"></app-recipe-card>
+  <app-recipe-card class="card" [card]="recipeCard" [displayTitle]="false" [displayLink]="false"></app-recipe-card>
   <div class="recipe-container">
     <div class="ingredients">
       <span class="ingredients_header">Ингридиенты</span>
       <div class="ingredients_block" *ngFor="let ingredient of recipe.ingredients">
         <span class="ingredients_title">{{ingredient.title}}</span>
-        <span class="ingredients_ingredient" *ngFor="let item of ingredient.items">{{item}}</span>
+        <span class="ingredients_ingredient">{{ingredient.description}}</span>
       </div>
     </div>
-    <div class="steps">
-      <app-step class="step" *ngFor="let step of recipe.steps" [step]="step"></app-step>
-      <span class="steps_footer">Приятного аппетита!</span>
+    <div class="stages">
+      <app-step class="stage" *ngFor="let stage of recipe.stages" [stage]="stage"></app-step>
+      <span class="stages_footer">Приятного аппетита!</span>
     </div>
   </div>
 </div>  

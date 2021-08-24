@@ -1,4 +1,4 @@
-export interface RecipeCard {
+export class RecipeCard {
   id: number;
   title: string;
   description: string;
@@ -11,4 +11,6 @@ export interface RecipeCard {
   isLiked: boolean;
   isFavorite: boolean;
   authorLogin: string;
+
+  constructor() {}
 }

@@ -11,27 +11,26 @@ import { UserService } from '../../../../services/user.service';
 export class RecipeCardComponent implements OnInit {
 
   @Input() card: RecipeCard;
-
-  isFavourite: boolean;
-  isLiked: boolean;
+  @Input() displayLink: boolean;
+  @Input() displayTitle: boolean;
 
   constructor(private userService: UserService, private recipeService: RecipeService) { }
 
   ngOnInit() {
-    this.isFavourite = this.card.isFavorite;
-    this.isLiked = this.card.isLiked;
+    console.log("papa");
+    console.log(this.card);
   }
 
   selectFavourite() {
     if (this.userService.isLoggedIn()) {
-      if (this.isFavourite) {
+      if (this.card.isFavorite) {
         this.recipeService.deleteFavoriteToRecipe(this.card.id).then(() => {
-          this.isFavourite = false;
+          this.card.isFavorite = false;
           this.card.favoritesCount--;
         });
       } else {
         this.recipeService.addFavoriteToRecipe(this.card.id).then(() => {
-          this.isFavourite = true;
+          this.card.isFavorite = true;
           this.card.favoritesCount++;
         });
       }
@@ -40,14 +39,14 @@ export class RecipeCardComponent implements OnInit {
 
   selectLiked() {
     if (this.userService.isLoggedIn()) {
-      if (this.isLiked) {
+      if (this.card.isLiked) {
         this.recipeService.deleteLikeToRecipe(this.card.id).then(() => {
-          this.isLiked = false;
+          this.card.isLiked = false;
           this.card.likesCount--;
         });
       } else {
         this.recipeService.addLikeToRecipe(this.card.id).then(() => {
-          this.isLiked = true;
+          this.card.isLiked = true;
           this.card.likesCount++;
         });
       }

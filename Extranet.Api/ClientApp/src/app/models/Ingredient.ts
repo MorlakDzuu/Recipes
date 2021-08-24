@@ -1,4 +1,4 @@
 export interface Ingredient {
   title: string;
-  items: string[];
+  description: string;
 }

@@ -19,7 +19,8 @@
 
 .recipe_image
 {
-    margin-right: 58px; 
+  margin-right: 58px;
+  border-radius: 72px 0px;
 }
 
 .recipe_content

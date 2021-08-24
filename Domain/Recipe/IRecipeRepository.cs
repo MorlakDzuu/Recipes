@@ -15,5 +15,6 @@ namespace Domain.Recipe
         public Task<List<int>> GetAllIdsAsync();
         public Task DeleteAsync( int id );
         public Task<Recipe> GetRecipeOfDay();
+        public Task<List<Recipe>> GetByUserIdAsync( int userId );
     }
 }

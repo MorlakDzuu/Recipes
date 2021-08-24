@@ -2,6 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { RecipeOfDayComponent } from './pages/home/recipe-of-day/recipe-of-day.component';
@@ -22,6 +26,9 @@ import { RecipePageComponent } from './layout/recipe-page/recipe-page.component'
 import { StepComponent } from './layout/recipe-page/step/step.component';
 import { RecipeAddButtonComponent } from './pages/recipes-feed/recipe-add-button/recipe-add-button.component';
 import { RecipesSortingByTagsComponent } from './pages/recipes-feed/recipes-sorting-by-tags/recipes-sorting-by-tags.component';
+import { RecipeAddPageComponent } from './pages/recipe-add-page/recipe-add-page.component';
+import { RecipeAdd } from './models/recipe-add';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 
 @NgModule({
@@ -42,12 +49,17 @@ import { RecipesSortingByTagsComponent } from './pages/recipes-feed/recipes-sort
     RecipePageComponent,
     StepComponent,
     RecipeAddButtonComponent,
-    RecipesSortingByTagsComponent
+    RecipesSortingByTagsComponent,
+    RecipeAddPageComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     BrowserAnimationsModule,
+    MatChipsModule,
+    MatSnackBarModule,
+    MatIconModule,
     MatMenuModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
@@ -55,7 +67,9 @@ import { RecipesSortingByTagsComponent } from './pages/recipes-feed/recipes-sort
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'recipe', component: RecipesFeedComponent },
-      { path: 'recipe/:id', component: RecipePageComponent }
+      { path: 'recipe/:id', component: RecipePageComponent },
+      { path: "recipeadd", component: RecipeAddPageComponent },
+      { path: "profile", component: ProfileComponent }
     ]),
     BrowserAnimationsModule
   ],

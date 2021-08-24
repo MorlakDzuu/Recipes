@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RecipeCard } from '../models/RecipeCard';
 import { Observable } from 'rxjs';
 import { Recipe } from '../models/Recipe';
+import { RecipeAdd } from '../models/recipe-add';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,11 @@ export class RecipeService {
   private basePath: string = "recipe/";
 
   constructor(private http: HttpClient) { }
+
+  addNewRecipe(recipe: RecipeAdd): Observable<any> {
+    var path = this.basePath + "add";
+    return this.http.post(path, recipe);
+  }
 
   getRecipeOfDay(): Observable<RecipeCard> {
     var path: string = this.basePath + "feed/recipeOfDay";

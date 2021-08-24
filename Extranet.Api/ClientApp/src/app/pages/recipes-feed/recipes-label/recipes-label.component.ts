@@ -10,17 +10,25 @@ import { RecipeService } from '../../../services/recipe.service';
 export class RecipesLabelComponent implements OnInit {
 
   public cards: RecipeCard[];
-  public pageNumber: number = 1;
+  public pageNumber: number = 2;
+  public canLoadMore: boolean;
 
   constructor(private recipeService: RecipeService) { }
 
   ngOnInit() {
     this.recipeService.getRecipeFeed(this.pageNumber).subscribe(val => this.cards = val);
+    this.canLoadMore = true
   }
 
   addMore() {
-    this.pageNumber++;
-    this.recipeService.getRecipeFeed(this.pageNumber).subscribe(val => val.forEach(card => this.cards.push(card)));
+    this.recipeService.getRecipeFeed(this.pageNumber).subscribe(val => {
+      if (val.length != 0) {
+        val.forEach(card => this.cards.push(card));
+        this.pageNumber++;
+      } else {
+        this.canLoadMore = false;
+      }
+    });
   }
 
 }

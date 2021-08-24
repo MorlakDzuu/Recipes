@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Step } from '../../../models/Step';
+import { Stage } from '../../../models/stage';
 
 @Component({
   selector: 'app-step',
@@ -8,7 +8,7 @@ import { Step } from '../../../models/Step';
 })
 export class StepComponent implements OnInit {
 
-  @Input() step: Step;
+  @Input() stage: Stage;
 
   constructor() { }
 

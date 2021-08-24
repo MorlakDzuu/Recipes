@@ -1,5 +1,5 @@
 .back::before {
-  content: "←";
+  content: url("../../../images/keyboard_backspace.svg");
   position: absolute;
   top: -1px;
   left: -32px;
@@ -14,7 +14,8 @@
   transition: text-shadow .3s;
   text-decoration: none;
   display: block;
-  margin: 64px 0 0 10.7%;
+  margin-top: 49px;
+  margin-left: 32px;
   position: relative;
   width: 58px;
   height: 22px;
@@ -31,14 +32,11 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 83.2%;
   height: 112px;
-  padding: 10px 8.4% 0;
 }
 
 .title_text {
   width: 811px;
-  height: 62px;
   font-family: Montserrat;
   font-style: normal;
   font-weight: bold;
@@ -51,7 +49,6 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 27.8%;
 }
 
 .title_button {
@@ -85,7 +82,9 @@
   box-shadow: 0 0 1px 1px rgba(145, 150, 161, 0.7);
   transition: .3s;
   background-color: #FFF;
-  width: 17%;
+  width: 60px;
+  height: 60px;
+  margin-right: 18px;
 }
 
 .title_button_edit:hover {
@@ -128,13 +127,19 @@
 
 .card {
   display: block;
+  margin-top: 50px;
+  border: none !important;
 }
 
 .recipe-container {
   display: flex;
   flex-direction: row;
+  margin-top: 40px;
   justify-content: space-between;
-  margin: 41px 8.4% 0;
+}
+
+.recipe {
+    width: 1200px;
 }
 
 .ingredients {
@@ -184,17 +189,17 @@
   color: #4A525A;
 }
 
-.steps {
+.stages {
   display: flex;
   flex-direction: column;
   width: 66%;
 }
 
-.step {
+.stage {
   margin-bottom: 20px;
 }
 
-.steps_footer {
+.stages_footer {
   display: block;
   margin: 20px auto 103px;
   width: 286px;

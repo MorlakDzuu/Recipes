@@ -16,6 +16,7 @@ namespace Application.Service
         public Task DeleteFavoriteByUserAsync( int userId, int recipeId );
         public Task<List<RecipeFeedDto>> GetRecipesFeedAsync( int pageNumber, int userId, string searchString = null, bool orderByUser = false, bool orderByFavorite = false );
         public Task<RecipeFeedDto> GetRecipeOfDay( int userId );
+        public Task<List<RecipeFeedDto>> GetRecipesFeedByUserIdAsync( int userId );
     }
 
     public class RecipeService : IRecipeService
@@ -61,6 +62,7 @@ namespace Application.Service
             int favoritesCount = await _labelRepository.GetFavoriteCountByRecipeIdAsync( recipeId );
             int likesCount = await _labelRepository.GetLikeCountByRecipeIdAsync( recipeId );
             bool isLiked = await _labelRepository.IsRecipeLikedByUser( recipeId, userId );
+            bool isFavorite = await _labelRepository.IsRecipeFavoriteByUser( recipeId, userId );
 
             RecipePageDto recipePageDto = new RecipePageDto
             {
@@ -74,7 +76,8 @@ namespace Application.Service
                 Stages = recipe.Stages.ConvertAll( item => new StageDto() { SerialNumber = item.SerialNumber, Description = item.Description } ),
                 Ingredients = recipe.Ingredients.ConvertAll( item => new IngredientDto() { Title = item.Title, Description = item.Description } ),
                 Tags = tags,
-                IsLiked = isLiked
+                IsLiked = isLiked,
+                IsFavorite = isFavorite
             };
 
             return recipePageDto;
@@ -129,6 +132,13 @@ namespace Application.Service
             RecipeFeedDto recipeFeedDto = ( await ConvertRecipesToRecipeFeedDtos( recipes, userId ) )[ 0 ];
 
             return recipeFeedDto;
+        }
+
+        public async Task<List<RecipeFeedDto>> GetRecipesFeedByUserIdAsync( int userId )
+        {
+            List<Recipe> recipes = await _recipeRepository.GetByUserIdAsync( userId );
+
+            return await ConvertRecipesToRecipeFeedDtos( recipes, userId );
         }
 
         private async Task<List<RecipeFeedDto>> ConvertRecipesToRecipeFeedDtos( List<Recipe> recipes, int userId )

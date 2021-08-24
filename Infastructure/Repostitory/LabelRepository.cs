@@ -69,5 +69,15 @@ namespace Infastructure.Repostitory
             Label label = await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.RecipeId == recipeId ) && ( item.Type == LabelTypes.Like ) ).SingleOrDefaultAsync();
             _labelDbSet.Remove( label );
         }
+
+        public async Task<int> GetLikeCountByUserIdAsync( int userId )
+        {
+            return await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.Type == LabelTypes.Like ) ).CountAsync();
+        }
+
+        public async Task<int> GetFvoriteCountByUserIdAsync( int userId )
+        {
+            return await _labelDbSet.Where( item => ( item.UserId == userId ) && ( item.Type == LabelTypes.Favorite ) ).CountAsync();
+        }
     }
 }

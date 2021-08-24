@@ -18,14 +18,31 @@ export class NavMenuComponent implements OnInit {
     userLogin.login = "danil228";
     userLogin.password = "123456";
 
-    this.userService.userLogin(userLogin).subscribe(data => {
-      localStorage.setItem("userName", data.name);
-      localStorage.setItem("token", data.token);
-      this.isLogIn = !_isLogIn;
-    });
+    if (!_isLogIn) {
+      this.userService.userLogin(userLogin).subscribe(data => {
+        localStorage.setItem("userName", data.name);
+        localStorage.setItem("token", data.token);
+        this.isLogIn = !_isLogIn;
+      });
+    } else {
+      this.userService.logout().subscribe(data => {
+        if (data.status == 200) {
+          localStorage.removeItem("userName");
+          localStorage.removeItem("token");
+          this.isLogIn = !_isLogIn;
+        }
+      });
+    }
   }
 
   ngOnInit(): void {
+    console.log(localStorage.getItem("userName"));
+    console.log(this.userService.isLoggedIn());
+    if (this.userService.isLoggedIn()) {
+      this.isLogIn = true;
+    } else {
+      this.isLogIn = false;
+    }
   }
 
 }

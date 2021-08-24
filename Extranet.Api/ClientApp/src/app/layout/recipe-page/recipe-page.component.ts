@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Recipe } from '../../models/Recipe';
+import { RecipeCard } from '../../models/RecipeCard';
 import { RecipeService } from '../../services/recipe.service';
 
 @Component({
@@ -12,13 +14,33 @@ export class RecipePageComponent implements OnInit {
 
   private recipeId: number;
   recipe: Recipe;
+  recipeCard: RecipeCard = new RecipeCard();
 
-  constructor(private activateRoute: ActivatedRoute, private recipeService: RecipeService) {
+  constructor(private activateRoute: ActivatedRoute, private recipeService: RecipeService, private location: Location) {
     this.recipeId = activateRoute.snapshot.params['id'];
   }
 
   ngOnInit() {
-    this.recipeService.getRecipeById(this.recipeId).subscribe(val => { this.recipe = val; console.log(val) });
+    this.recipeService.getRecipeById(this.recipeId).subscribe(val => {
+      this.recipe = val;
+      this.recipe.stages.sort((stage1, stage2) => stage1.serialNumber - stage2.serialNumber);
+      console.log(val);
+      this.recipeCard.id = this.recipeId;
+      this.recipeCard.cookingDuration = this.recipe.cookingDuration;
+      this.recipeCard.title = this.recipe.title;
+      this.recipeCard.description = this.recipe.description;
+      this.recipeCard.portionsCount = this.recipe.portionsCount;
+      this.recipeCard.photoUrl = this.recipe.photoUrl;
+      this.recipeCard.favoritesCount = this.recipe.favoritesCount;
+      this.recipeCard.likesCount = this.recipe.likesCount;
+      this.recipeCard.tags = this.recipe.tags;
+      this.recipeCard.isLiked = this.recipe.isLiked;
+      this.recipeCard.isFavorite = this.recipe.isFavorite;
+      this.recipeCard.authorLogin = "";
+    });
   }
 
+  goBack() {
+    this.location.back();
+  }
 }

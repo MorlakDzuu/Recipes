@@ -51,6 +51,11 @@ namespace Infastructure.Repostitory
             return await _recipesDbSet.Where( item => item.Id == id ).SingleOrDefaultAsync();
         }
 
+        public async Task<List<Recipe>> GetByUserIdAsync( int userId )
+        {
+            return await _recipesDbSet.Where( item => item.UserId == userId ).ToListAsync();
+        }
+
         public async Task<Recipe> GetRecipeOfDay()
         {
             return await _recipesDbSet.OrderBy( item => item.Title ).FirstOrDefaultAsync();
