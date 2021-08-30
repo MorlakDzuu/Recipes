@@ -2,9 +2,9 @@
   <a class="back" (click)="goBack()">Назад</a>
   <div class="title">
     <span class="title_text">{{recipe.title}}</span>
-    <div class="buttons">
-      <a class="title_button title_button_delete"></a>
-      <a class="title_button title_button_edit">Редактировать</a>
+    <div class="buttons" *ngIf="isMyRecipe">
+      <a class="title_button title_button_delete" (click)="delete()"></a>
+      <a routerLink="/recipe/edit/{{recipeId}}" class="title_button title_button_edit">Редактировать</a>
     </div>
   </div>
   <app-recipe-card class="card" [card]="recipeCard" [displayTitle]="false" [displayLink]="false"></app-recipe-card>

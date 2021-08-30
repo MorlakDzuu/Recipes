@@ -12,7 +12,7 @@ namespace Application.Dto
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public int CookingTime { get; set; }
+        public int CookingDuration { get; set; }
         public int PortionsCount { get; set; }
         public string PhotoUrl { get; set; }
         public List<string> Tags { get; set; }

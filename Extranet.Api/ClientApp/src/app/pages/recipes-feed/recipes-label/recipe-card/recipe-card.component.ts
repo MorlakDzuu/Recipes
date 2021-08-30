@@ -17,8 +17,6 @@ export class RecipeCardComponent implements OnInit {
   constructor(private userService: UserService, private recipeService: RecipeService) { }
 
   ngOnInit() {
-    console.log("papa");
-    console.log(this.card);
   }
 
   selectFavourite() {

@@ -304,6 +304,7 @@
 .recipe {
   display: block;
   margin-bottom: 20px;
+  width: 1200px;
 }
 
   .recipe:last-child {

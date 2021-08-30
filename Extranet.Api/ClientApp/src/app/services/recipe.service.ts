@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient,  HttpParams } from '@angular/common/http';
 import { RecipeCard } from '../models/RecipeCard';
 import { Observable } from 'rxjs';
 import { Recipe } from '../models/Recipe';
@@ -17,6 +17,28 @@ export class RecipeService {
   addNewRecipe(recipe: RecipeAdd): Observable<any> {
     var path = this.basePath + "add";
     return this.http.post(path, recipe);
+  }
+
+  editRecipe(recipe: RecipeAdd, recipeId: number): Observable<any> {
+    var path = this.basePath + "edit/" + recipeId;
+    return this.http.post(path, recipe);
+  }
+
+  deleteRecipe(recipeId: number): Observable<any> {
+    var path = this.basePath + "delete/" + recipeId;
+    return this.http.get(path);
+  }
+
+  getRecipesFeedBySearchString(pageNumber: number, searchString: string): Observable<RecipeCard[]> {
+    var path: string = this.basePath + "feed/search/" + pageNumber;
+    let params = new HttpParams().set("search", searchString);
+
+    return this.http.get<RecipeCard[]>(path, { params: params });
+  }
+
+  getFavorites(pageNumber: number): Observable<RecipeCard[]> {
+    var path: string = this.basePath + "feed/favorite/" + pageNumber;
+    return this.http.get<RecipeCard[]>(path);
   }
 
   getRecipeOfDay(): Observable<RecipeCard> {

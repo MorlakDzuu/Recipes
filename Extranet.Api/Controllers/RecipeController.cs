@@ -40,32 +40,21 @@ namespace Extranet.Api.Controllers
         [HttpPost, Route( "add" )]
         public async Task<IActionResult> AddRecipe( [FromBody] RecipeDto recipeDto )
         {
-            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            int userId = GetUserId();
+            Recipe recipe = await _recipeService.AddRecipeAsync( recipeDto, userId );
+            await _tagService.AddNewTagsAsync( recipeDto.Tags );
+            await _unitOfWork.Commit();
 
-            try
-            {
-                Recipe recipe = await _recipeService.AddRecipeAsync( recipeDto, userId );
-                await _tagService.AddNewTagsAsync( recipeDto.Tags );
-                await _unitOfWork.Commit();
+            await _tagService.AddTagsToRecipeAsync( recipeDto.Tags, recipe.Id );
+            await _unitOfWork.Commit();
 
-                await _tagService.AddTagsToRecipeAsync( recipeDto.Tags, recipe.Id );
-                await _unitOfWork.Commit();
-
-                return Ok();
-            } catch (Exception)
-            {
-                return BadRequest("Error");
-            }
+            return Ok();
         }
 
         [HttpGet, Route( "get/{recipeId}" )]
         public async Task<RecipePageDto> Get( int recipeId )
         {
-            int userId = 0;
-            if ( User.Identity.IsAuthenticated )
-            {
-                userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
-            }
+            int userId = GetUserId();
 
             return await _recipeService.GetRecipeById( recipeId, userId );
         }
@@ -74,56 +63,36 @@ namespace Extranet.Api.Controllers
         [HttpGet, Route( "like/add/{recipeId}" )]
         public async Task<IActionResult> AddLike( int recipeId )
         {
-            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            int userId = GetUserId();
 
-            try
-            {
-                await _labelRepository.AddLikeAsync( userId, recipeId );
-                await _unitOfWork.Commit();
+            await _labelRepository.AddLikeAsync( userId, recipeId );
+            await _unitOfWork.Commit();
 
-                return Ok( "success" );
-            }
-            catch ( Exception )
-            {
-                return BadRequest( "error" );
-            }
+            return Ok( "success" );
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "favorite/add/{recipeId}" )]
         public async Task<IActionResult> AddFavorite( int recipeId )
         {
-            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            int userId = GetUserId();
 
-            try
-            {
-                await _labelRepository.AddFavoriteAsync( userId, recipeId );
-                await _unitOfWork.Commit();
+            await _labelRepository.AddFavoriteAsync( userId, recipeId );
+            await _unitOfWork.Commit();
 
-                return Ok( "success" );
-            }
-            catch ( Exception )
-            {
-                return BadRequest( "error" );
-            }
+            return Ok( "success" );
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "like/delete/{recipeId}" )]
         public async Task<IActionResult> DeleteLike( int recipeId )
         {
-            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
-            try
-            {
-                await _recipeService.DeleteLikeByUserAsync( userId, recipeId );
-                await _unitOfWork.Commit();
+            int userId = GetUserId();
+           
+            await _recipeService.DeleteLikeByUserAsync( userId, recipeId );
+            await _unitOfWork.Commit();
                 
-                return Ok( "success" );
-            }
-            catch ( Exception )
-            {
-                return BadRequest( "error" );
-            }
+            return Ok( "success" );
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
@@ -132,17 +101,10 @@ namespace Extranet.Api.Controllers
         {
             int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
 
-            try
-            {
-                await _recipeService.DeleteFavoriteByUserAsync( userId, recipeId );
-                await _unitOfWork.Commit();
+            await _recipeService.DeleteFavoriteByUserAsync( userId, recipeId );
+            await _unitOfWork.Commit();
 
-                return Ok( "success" );
-            }
-            catch ( Exception )
-            {
-                return BadRequest( "error" );
-            }
+            return Ok( "success" );
         }
 
         [HttpPost, Route( "edit/{recipeId}" )]
@@ -152,7 +114,7 @@ namespace Extranet.Api.Controllers
 
             recipe.Title = recipeDto.Title;
             recipe.Description = recipeDto.Description;
-            recipe.CookingTime = recipeDto.CookingTime;
+            recipe.CookingTime = recipeDto.CookingDuration;
             recipe.PortionsCount = recipeDto.PortionsCount;
             recipe.PhotoUrl = recipeDto.PhotoUrl;
             recipe.Stages = recipeDto.Stages.ConvertAll( item => new Stage() { SerialNumber = item.SerialNumber, Description = item.Description } );
@@ -166,6 +128,7 @@ namespace Extranet.Api.Controllers
             await _unitOfWork.Commit();
         }
 
+        [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "delete/{recipeId}" )]
         public async Task DeleteRecipe( int recipeId )
         {
@@ -177,11 +140,7 @@ namespace Extranet.Api.Controllers
         [HttpGet, Route( "feed/{pageNumber}" )]
         public async Task<List<RecipeFeedDto>> GetFeed( int pageNumber )
         {
-            int userId = 0;
-            if ( User.Identity.IsAuthenticated )
-            {
-                userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
-            }
+            int userId = GetUserId();
 
             return await _recipeService.GetRecipesFeedAsync( pageNumber, userId );
         }
@@ -189,11 +148,7 @@ namespace Extranet.Api.Controllers
         [HttpGet, Route( "feed/search/{pageNumber}" )]
         public async Task<List<RecipeFeedDto>> GetFeedBySearchString( int pageNumber, string search )
         {
-            int userId = 0;
-            if ( User.Identity.IsAuthenticated )
-            {
-                userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
-            }
+            int userId = GetUserId();
 
             return await _recipeService.GetRecipesFeedAsync( pageNumber, userId, searchString: search );
         }
@@ -202,7 +157,7 @@ namespace Extranet.Api.Controllers
         [HttpGet, Route( "feed/user/{pageNumber}" )]
         public async Task<List<RecipeFeedDto>> GetUserFeed( int pageNumber )
         {
-            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            int userId = GetUserId();
 
             return await _recipeService.GetRecipesFeedAsync( pageNumber, userId, orderByUser: true );
         }
@@ -211,7 +166,7 @@ namespace Extranet.Api.Controllers
         [HttpGet, Route( "feed/favorite/{pageNumber}" )]
         public async Task<List<RecipeFeedDto>> GetFavorites( int pageNumber )
         {
-            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            int userId = GetUserId();
 
             return await _recipeService.GetRecipesFeedAsync( pageNumber, userId, orderByFavorite: true );
         }
@@ -219,13 +174,19 @@ namespace Extranet.Api.Controllers
         [HttpGet, Route( "feed/recipeOfDay" )]
         public async Task<RecipeFeedDto> GetRecipeOfDay()
         {
+            int userId = GetUserId();
+
+            return await _recipeService.GetRecipeOfDay( userId );
+        }
+
+        private int GetUserId()
+        {
             int userId = 0;
             if ( User.Identity.IsAuthenticated )
             {
                 userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
             }
-
-            return await _recipeService.GetRecipeOfDay( userId );
+            return userId;
         }
     }
 }

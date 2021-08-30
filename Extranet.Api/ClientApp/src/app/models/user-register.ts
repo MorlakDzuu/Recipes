@@ -1,5 +1,7 @@
 export class UserRegister {
-  name: string;
-  login: string;
-  password: string;
+  public name: string;
+  public login: string;
+  public password: string;
+
+  constructor() {}
 }

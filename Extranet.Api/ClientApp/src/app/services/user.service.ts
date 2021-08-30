@@ -32,13 +32,9 @@ export class UserService {
     return this.http.post<UserSettings>(path, user);
   }
 
-  public userRegister(user: UserRegister) {
+  public userRegister(user: UserRegister): Observable<any> {
     var path: string = this.basePath + "register";
-    try {
-      this.http.post(path, user);
-    } catch (error) {
-      console.log(error.message);
-    }
+    return this.http.post(path, user);
   }
 
   public userVerifyToken() {

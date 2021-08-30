@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { RecipeOfDayComponent } from './pages/home/recipe-of-day/recipe-of-day.component';
@@ -29,6 +29,9 @@ import { RecipesSortingByTagsComponent } from './pages/recipes-feed/recipes-sort
 import { RecipeAddPageComponent } from './pages/recipe-add-page/recipe-add-page.component';
 import { RecipeAdd } from './models/recipe-add';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { FavoritesComponent } from './pages/favorites/favorites.component';
+import { RegistrationComponent } from './layout/registration/registration.component';
+import { AuthorizationComponent } from './layout/authorization/authorization.component';
 
 
 @NgModule({
@@ -51,14 +54,19 @@ import { ProfileComponent } from './pages/profile/profile.component';
     RecipeAddButtonComponent,
     RecipesSortingByTagsComponent,
     RecipeAddPageComponent,
-    ProfileComponent
+    ProfileComponent,
+    FavoritesComponent,
+    RegistrationComponent,
+    AuthorizationComponent
   ],
+  entryComponents: [AuthorizationComponent, RegistrationComponent],
   imports: [
     BrowserModule,
     FormsModule,
     BrowserAnimationsModule,
     MatChipsModule,
     MatSnackBarModule,
+    MatDialogModule,
     MatIconModule,
     MatMenuModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -66,11 +74,14 @@ import { ProfileComponent } from './pages/profile/profile.component';
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'recipe', component: RecipesFeedComponent },
+      { path: 'recipes', component: RecipesFeedComponent },
       { path: 'recipe/:id', component: RecipePageComponent },
+      { path: 'recipes/search/:searchString', component: RecipesFeedComponent,  },
       { path: "recipeadd", component: RecipeAddPageComponent },
-      { path: "profile", component: ProfileComponent }
-    ]),
+      { path: "profile", component: ProfileComponent },
+      { path: "favorites", component: FavoritesComponent },
+      { path: "recipe/edit/:id", component: RecipeAddPageComponent }
+    ], { onSameUrlNavigation: 'reload' }),
     BrowserAnimationsModule
   ],
   providers: [],

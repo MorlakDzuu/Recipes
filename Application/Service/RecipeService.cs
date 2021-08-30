@@ -21,7 +21,7 @@ namespace Application.Service
 
     public class RecipeService : IRecipeService
     {
-        private const int PAGE_SIZE = 1;
+        private const int PAGE_SIZE = 4;
 
         private readonly IRecipeRepository _recipeRepository;
         private readonly ITagService _tagService;
@@ -45,7 +45,7 @@ namespace Application.Service
             Recipe recipe = new Recipe(
                 recipeDto.Title,
                 recipeDto.Description,
-                recipeDto.CookingTime,
+                recipeDto.CookingDuration,
                 recipeDto.PortionsCount,
                 recipeDto.PhotoUrl,
                 recipeDto.Stages.ConvertAll( item => new Stage() { SerialNumber = item.SerialNumber, Description = item.Description } ),
@@ -63,6 +63,7 @@ namespace Application.Service
             int likesCount = await _labelRepository.GetLikeCountByRecipeIdAsync( recipeId );
             bool isLiked = await _labelRepository.IsRecipeLikedByUser( recipeId, userId );
             bool isFavorite = await _labelRepository.IsRecipeFavoriteByUser( recipeId, userId );
+            bool isMyRecipe = recipe.UserId == userId;
 
             RecipePageDto recipePageDto = new RecipePageDto
             {
@@ -72,6 +73,7 @@ namespace Application.Service
                 PortionsCount = recipe.PortionsCount,
                 FavoritesCount = favoritesCount,
                 LikesCount = likesCount,
+                IsMyRecipe = isMyRecipe,
                 PhotoUrl = recipe.PhotoUrl,
                 Stages = recipe.Stages.ConvertAll( item => new StageDto() { SerialNumber = item.SerialNumber, Description = item.Description } ),
                 Ingredients = recipe.Ingredients.ConvertAll( item => new IngredientDto() { Title = item.Title, Description = item.Description } ),

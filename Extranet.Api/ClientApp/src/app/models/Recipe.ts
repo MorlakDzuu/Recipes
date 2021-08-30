@@ -12,6 +12,7 @@ export interface Recipe {
   portionsCount: number;
   isLiked: boolean;
   isFavorite: boolean;
+  isMyRecipe: boolean;
   tags: string[];
   photoUrl: string;
   ingredients: Ingredient[];

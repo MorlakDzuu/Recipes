@@ -15,6 +15,7 @@ export class RecipePageComponent implements OnInit {
   private recipeId: number;
   recipe: Recipe;
   recipeCard: RecipeCard = new RecipeCard();
+  isMyRecipe: boolean;
 
   constructor(private activateRoute: ActivatedRoute, private recipeService: RecipeService, private location: Location) {
     this.recipeId = activateRoute.snapshot.params['id'];
@@ -24,7 +25,6 @@ export class RecipePageComponent implements OnInit {
     this.recipeService.getRecipeById(this.recipeId).subscribe(val => {
       this.recipe = val;
       this.recipe.stages.sort((stage1, stage2) => stage1.serialNumber - stage2.serialNumber);
-      console.log(val);
       this.recipeCard.id = this.recipeId;
       this.recipeCard.cookingDuration = this.recipe.cookingDuration;
       this.recipeCard.title = this.recipe.title;
@@ -37,10 +37,16 @@ export class RecipePageComponent implements OnInit {
       this.recipeCard.isLiked = this.recipe.isLiked;
       this.recipeCard.isFavorite = this.recipe.isFavorite;
       this.recipeCard.authorLogin = "";
+
+      this.isMyRecipe = this.recipe.isMyRecipe;
     });
   }
 
   goBack() {
     this.location.back();
+  }
+
+  delete() {
+    this.recipeService.deleteRecipe(this.recipeId).subscribe(() => this.goBack());
   }
 }

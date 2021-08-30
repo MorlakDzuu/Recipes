@@ -1,8 +1,10 @@
 <div class="adding-recipe">
   <a class="back" (click)="goBack()">Назад</a>
   <div class="title">
-    <span class="title_text">Добавить новый рецепт</span>
-    <a class="title_button" (click)="send()">Опубликовать</a>
+    <span class="title_text" *ngIf="!isEditMode">Добавить новый рецепт</span>
+    <span class="title_text" *ngIf="isEditMode">Редактирование рецепта</span>
+    <a class="title_button" (click)="send()" *ngIf="!isEditMode">Опубликовать</a>
+    <a class="title_button" (click)="send()" *ngIf="isEditMode">Изменить</a>
   </div>
   <div class="recipe">
     <div *ngIf="!isImageLoaded" class="recipe_photo">

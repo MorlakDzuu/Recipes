@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-recipes-feed',
@@ -7,7 +10,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RecipesFeedComponent implements OnInit {
 
-  constructor() { }
+  public searchString: string = "";
+
+  constructor(private activateRoute: ActivatedRoute) {
+    this.activateRoute.params.subscribe(routeParams => {
+      this.searchString = routeParams.searchString;
+    });
+  }
 
   ngOnInit() {
   }
