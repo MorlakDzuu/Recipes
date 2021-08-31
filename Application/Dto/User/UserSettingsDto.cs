@@ -1,10 +1,9 @@
 ﻿namespace Application.Dto.User
 {
-    public class UserEditDto
+    public class UserSettingsDto
     {
         public string Name { get; set; }
         public string Login { get; set; }
-        public string Description { get; set; }
-        public string Password { get; set; }
+        public string Token { get; set; }
     }
 }

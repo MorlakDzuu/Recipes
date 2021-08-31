@@ -22,12 +22,11 @@ import { RecipesFeedComponent } from './pages/recipes-feed/recipes-feed.componen
 import { RecipesLabelComponent } from './pages/recipes-feed/recipes-label/recipes-label.component';
 import { RecipeCardComponent } from './pages/recipes-feed/recipes-label/recipe-card/recipe-card.component';
 import { SearchComponent } from './pages/recipes-feed/search/search.component';
-import { RecipePageComponent } from './layout/recipe-page/recipe-page.component';
-import { StepComponent } from './layout/recipe-page/step/step.component';
+import { RecipePageComponent } from './pages/recipe-page/recipe-page.component';
+import { StepComponent } from './pages/recipe-page/step/step.component';
 import { RecipeAddButtonComponent } from './pages/recipes-feed/recipe-add-button/recipe-add-button.component';
 import { RecipesSortingByTagsComponent } from './pages/recipes-feed/recipes-sorting-by-tags/recipes-sorting-by-tags.component';
 import { RecipeAddPageComponent } from './pages/recipe-add-page/recipe-add-page.component';
-import { RecipeAdd } from './models/recipe-add';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { FavoritesComponent } from './pages/favorites/favorites.component';
 import { RegistrationComponent } from './layout/registration/registration.component';
@@ -77,10 +76,10 @@ import { AuthorizationComponent } from './layout/authorization/authorization.com
       { path: 'recipes', component: RecipesFeedComponent },
       { path: 'recipe/:id', component: RecipePageComponent },
       { path: 'recipes/search/:searchString', component: RecipesFeedComponent,  },
-      { path: "recipeadd", component: RecipeAddPageComponent },
-      { path: "profile", component: ProfileComponent },
-      { path: "favorites", component: FavoritesComponent },
-      { path: "recipe/edit/:id", component: RecipeAddPageComponent }
+      { path: 'recipeadd', component: RecipeAddPageComponent },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'favorites', component: FavoritesComponent },
+      { path: 'recipe/edit/:id', component: RecipeAddPageComponent }
     ], { onSameUrlNavigation: 'reload' }),
     BrowserAnimationsModule
   ],

@@ -14,15 +14,13 @@ namespace Application.Service
         public Task<RecipePageDto> GetRecipeById( int recipeId, int userId );
         public Task DeleteLikeByUserAsync( int userId, int recipeId );
         public Task DeleteFavoriteByUserAsync( int userId, int recipeId );
-        public Task<List<RecipeFeedDto>> GetRecipesFeedAsync( int pageNumber, int userId, string searchString = null, bool orderByUser = false, bool orderByFavorite = false );
+        public Task<List<RecipeFeedDto>> GetRecipesFeedAsync( int pageNumber, int pageSize, int userId, string searchString = null, bool orderByUser = false, bool orderByFavorite = false );
         public Task<RecipeFeedDto> GetRecipeOfDay( int userId );
         public Task<List<RecipeFeedDto>> GetRecipesFeedByUserIdAsync( int userId );
     }
 
     public class RecipeService : IRecipeService
     {
-        private const int PAGE_SIZE = 4;
-
         private readonly IRecipeRepository _recipeRepository;
         private readonly ITagService _tagService;
         private readonly ILabelRepository _labelRepository;
@@ -58,6 +56,7 @@ namespace Application.Service
         public async Task<RecipePageDto> GetRecipeById( int recipeId, int userId )
         {
             Recipe recipe = await _recipeRepository.GetAsync( recipeId );
+            User user = await _userRepository.GetAsync( recipe.UserId );
             List<string> tags = await _tagService.GetTagsByRecipeId( recipeId );
             int favoritesCount = await _labelRepository.GetFavoriteCountByRecipeIdAsync( recipeId );
             int likesCount = await _labelRepository.GetLikeCountByRecipeIdAsync( recipeId );
@@ -75,6 +74,7 @@ namespace Application.Service
                 LikesCount = likesCount,
                 IsMyRecipe = isMyRecipe,
                 PhotoUrl = recipe.PhotoUrl,
+                AuthorLogin = user.Login,
                 Stages = recipe.Stages.ConvertAll( item => new StageDto() { SerialNumber = item.SerialNumber, Description = item.Description } ),
                 Ingredients = recipe.Ingredients.ConvertAll( item => new IngredientDto() { Title = item.Title, Description = item.Description } ),
                 Tags = tags,
@@ -87,6 +87,7 @@ namespace Application.Service
 
         public async Task<List<RecipeFeedDto>> GetRecipesFeedAsync(
             int pageNumber,
+            int pageSize,
             int userId,
             string searchString = null,
             bool orderByUser = false,
@@ -97,19 +98,19 @@ namespace Application.Service
             if ( searchString != null )
             {
                 searchString = searchString.ToLower().Trim();
-                recipes = await _recipeRepository.GetUsingPaginationAsync( pageNumber, PAGE_SIZE, searchString: searchString );
+                recipes = await _recipeRepository.GetUsingPaginationAsync( pageNumber, pageSize, searchString: searchString );
             }
             else if ( orderByUser )
             {
-                recipes = await _recipeRepository.GetUsingPaginationAsync( pageNumber, PAGE_SIZE, userId: userId );
+                recipes = await _recipeRepository.GetUsingPaginationAsync( pageNumber, pageSize, userId: userId );
             }
             else if ( orderByFavorite )
             {
-                recipes = await _recipeRepository.GetUsingPaginationAsync( pageNumber, PAGE_SIZE, userId: userId, isFavorite: true );
+                recipes = await _recipeRepository.GetUsingPaginationAsync( pageNumber, pageSize, userId: userId, isFavorite: true );
             }
             else
             {
-                recipes = await _recipeRepository.GetUsingPaginationAsync( pageNumber, PAGE_SIZE );
+                recipes = await _recipeRepository.GetUsingPaginationAsync( pageNumber, pageSize );
             }
 
             return await ConvertRecipesToRecipeFeedDtos( recipes, userId );
@@ -155,7 +156,7 @@ namespace Application.Service
                 bool isFavorite = await _labelRepository.IsRecipeFavoriteByUser( recipe.Id, userId );
                 string authorLogin = await _userRepository.GetLoginByRecipeId( recipe.Id );
 
-                RecipeFeedDto recipeFeedDto = new RecipeFeedDto()
+                RecipeFeedDto recipeFeedDto = new RecipeFeedDto
                 {
                     Id = recipe.Id,
                     Title = recipe.Title,

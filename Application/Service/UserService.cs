@@ -1,7 +1,6 @@
 ﻿using Application.Dto;
 using Application.Dto.User;
 using Domain.Label;
-using Domain.Recipe;
 using Domain.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -44,7 +43,7 @@ namespace Application.Service
         public async Task<UserDto> GetByLoginAsync( string login )
         {
             User user = await _userRepository.GetByLoginAsync( login );
-            return new UserDto()
+            return new UserDto
             {
                 Name = user.Name,
                 Login = user.Login,
@@ -59,12 +58,11 @@ namespace Application.Service
             int favoritesCount = await _labelRepository.GetFvoriteCountByUserIdAsync( userId );
             List<RecipeFeedDto> recipesFeed = await _recipeService.GetRecipesFeedByUserIdAsync( userId );
 
-            return new UserProfileDto()
+            return new UserProfileDto
             {
                 Name = user.Name,
                 Login = user.Login,
                 Description = user.Description,
-                Password = "",
                 LikesCount = likesCount,
                 FavoritesCount = favoritesCount,
                 RecipesCount = recipesFeed.Count,

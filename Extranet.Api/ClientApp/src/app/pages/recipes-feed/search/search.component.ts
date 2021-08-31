@@ -8,8 +8,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class SearchComponent implements OnInit {
 
-  public tags: string[] = ["Мясо", "Деликатесы", "Пироги", "Рыба"];
-  public searchString: string = "";
+  public tags: string[] = ['Мясо', 'Деликатесы', 'Пироги', 'Рыба'];
+  public searchString: string = '';
 
   constructor(private router: Router, private route: ActivatedRoute) { }
 
@@ -17,7 +17,7 @@ export class SearchComponent implements OnInit {
   }
 
   search() {
-    let seacrh: any = document.getElementById("seacrhInput");
+    let seacrh: any = document.getElementById('seacrhInput');
     let path: string = '/recipes/search/' + seacrh.value;
 
     this.router.navigate([path], { relativeTo: this.route });

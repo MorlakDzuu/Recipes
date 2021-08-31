@@ -20,8 +20,8 @@ export class AuthorizationComponent implements OnInit {
     private userService: UserService,
     private dialog: MatDialog,
     private dataService: DataService) {
-    this.userLogin.login = "";
-    this.userLogin.password = "";
+    this.userLogin.login = '';
+    this.userLogin.password = '';
   }
 
   public openRegistration() {
@@ -29,7 +29,7 @@ export class AuthorizationComponent implements OnInit {
   }
 
   public authorize() {
-    if (this.userLogin.login != "" && this.userLogin.password != "") {
+    if (this.userLogin.login != '' && this.userLogin.password != '') {
       this.userService.userLogin(this.userLogin).subscribe(data => {
         this.dataService.userName = data.name;
       });

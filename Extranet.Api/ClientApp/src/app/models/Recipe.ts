@@ -1,11 +1,11 @@
-import { Ingredient } from "./Ingredient";
+import { Ingredient } from "./ingredient";
 import { Stage } from "./stage";
 
-export interface Recipe {
+export class Recipe {
   id: number;
   title: string;
   description: string;
-  author: string;
+  authorLogin: string;
   likesCount: number;
   favoritesCount: number;
   cookingDuration: number;

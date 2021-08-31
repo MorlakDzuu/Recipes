@@ -12,5 +12,5 @@ export class RecipeCard {
   isFavorite: boolean;
   authorLogin: string;
 
-  constructor() {}
+  constructor() { }
 }

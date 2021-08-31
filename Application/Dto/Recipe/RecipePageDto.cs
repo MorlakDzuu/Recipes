@@ -1,10 +1,5 @@
 ﻿using Application.Dto.Recipe;
-using Domain.Recipe;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Dto
 {
@@ -21,6 +16,7 @@ namespace Application.Dto
         public bool IsLiked { get; set; }
         public bool IsFavorite { get; set; }
         public bool IsMyRecipe { get; set; }
+        public string AuthorLogin { get; set; }
         public List<IngredientDto> Ingredients { get; set; }
         public List<StageDto> Stages { get; set; }
     }

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { RecipeCard } from '../../../../models/RecipeCard';
+import { RecipeCard } from '../../../../models/recipe-card';
 import { RecipeService } from '../../../../services/recipe.service';
 import { UserService } from '../../../../services/user.service';
 

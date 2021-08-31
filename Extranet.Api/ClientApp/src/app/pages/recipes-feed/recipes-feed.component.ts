@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class RecipesFeedComponent implements OnInit {
 
-  public searchString: string = "";
+  public searchString: string = '';
 
   constructor(private activateRoute: ActivatedRoute) {
     this.activateRoute.params.subscribe(routeParams => {

@@ -10,11 +10,11 @@ export class AppComponent {
   constructor(private userService: UserService) {}
 
   ngOnInit() {
-    if (localStorage.getItem("userName") != null) {
+    if (localStorage.getItem('userName') != null) {
       this.userService.userVerifyToken().subscribe(data => {
         if (data.status != 403) {
-          localStorage.removeItem("userName");
-          localStorage.removeItem("token");
+          localStorage.removeItem('userName');
+          localStorage.removeItem('token');
         }
       });;
     }

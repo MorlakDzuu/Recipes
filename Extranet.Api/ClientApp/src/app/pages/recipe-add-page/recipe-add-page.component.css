@@ -47,6 +47,12 @@
   border-radius: 72px 0px;
 }
 
+.tagInput {
+  border: none !important;
+  outline: none !important;
+  flex: none !important;
+}
+
 .title {
   display: flex;
   flex-direction: row;

@@ -2,7 +2,6 @@
 using Application.Service;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,13 +21,13 @@ namespace Extranet.Api.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        private readonly IPasswordService _passwordService;
+        private readonly IAuthService _passwordService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepository;
 
         public UserController(
             IUserService userService,
-            IPasswordService passwordService,
+            IAuthService passwordService,
             IUnitOfWork unitOfWork,
             IUserRepository userRepository )
         {
@@ -42,24 +41,17 @@ namespace Extranet.Api.Controllers
         [HttpGet, Route( "info" )]
         public async Task<IActionResult> GetUserProfileInfo()
         {
-            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            int userId = GetUserId();
+            UserProfileDto userProfileDto = await _userService.GetUserProfileInfoAsync( userId );
 
-            try
-            {
-                UserProfileDto userProfileDto = await _userService.GetUserProfileInfoAsync( userId );
-                return Ok( userProfileDto );
-            }
-            catch ( Exception )
-            {
-                return BadRequest();
-            }
+            return Ok( userProfileDto );
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpPost, Route( "edit" )]
         public async Task<IActionResult> Edit( [FromBody] UserEditDto userEditDto )
         {
-            int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            int userId = GetUserId();
 
             try
             {
@@ -70,9 +62,10 @@ namespace Extranet.Api.Controllers
                 await _unitOfWork.Commit();
 
                 return Ok();
-            } catch(Exception)
+            }
+            catch ( Exception ex )
             {
-                return BadRequest();
+                return BadRequest( ex );
             }
         }
 
@@ -81,7 +74,7 @@ namespace Extranet.Api.Controllers
         {
             try
             {
-                userRegistrationDto.Password = _passwordService.HashPassword( userRegistrationDto.Password, RandomNumberGenerator.Create() );
+                userRegistrationDto.Password = HashUtil.HashPassword( userRegistrationDto.Password, RandomNumberGenerator.Create() );
 
                 await _userService.AddAsync( userRegistrationDto );
                 await _unitOfWork.Commit();
@@ -118,11 +111,11 @@ namespace Extranet.Api.Controllers
 
             UserDto userDto = await _userService.GetByLoginAsync( userLoginDto.Login );
 
-            var userSettings = new
+            UserSettingsDto userSettings = new UserSettingsDto
             {
-                name = userDto.Name,
-                login = userDto.Login,
-                token = encodedJwt
+                Name = userDto.Name,
+                Login = userDto.Login,
+                Token = encodedJwt
             };
 
             return Ok( userSettings );
@@ -132,15 +125,8 @@ namespace Extranet.Api.Controllers
         [Authorize( AuthenticationSchemes = "Bearer" )]
         public IActionResult Logoff()
         {
-            try
-            {
-                HttpContext.Session.Clear();
-                return Ok();
-            }
-            catch ( Exception )
-            {
-                return BadRequest();
-            }
+            HttpContext.Session.Clear();
+            return Ok();
         }
 
         [HttpGet, Route( "verify" )]
@@ -148,6 +134,17 @@ namespace Extranet.Api.Controllers
         public IActionResult VerifyToken()
         {
             return Ok( "token работает" );
+        }
+
+        private int GetUserId()
+        {
+            int userId = 0;
+            if ( User.Identity.IsAuthenticated )
+            {
+                userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
+            }
+
+            return userId;
         }
     }
 }

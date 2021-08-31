@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { RecipeAdd } from '../../models/recipe-add';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { ENTER } from '@angular/cdk/keycodes';
 import { FileService } from '../../services/file.service';
 import { RecipeService } from '../../services/recipe.service';
 import { ActivatedRoute } from '@angular/router';
@@ -19,7 +19,7 @@ export class RecipeAddPageComponent implements OnInit {
   visible = true;
   selectable = true;
   removable = true;
-  separatorKeysCodes: number[] = [ENTER, COMMA];
+  separatorKeysCodes: number[] = [ENTER];
   file: File = null;
   isImageLoaded: boolean = false;
   isEditMode: boolean = false;
@@ -58,8 +58,8 @@ export class RecipeAddPageComponent implements OnInit {
 
   public addTitle(): void {
     this.recipe.ingredients.push({
-      title: "",
-      description: ""
+      title: '',
+      description: ''
     });
   }
 
@@ -70,7 +70,7 @@ export class RecipeAddPageComponent implements OnInit {
   public addStage(): void {
     this.recipe.stages.push({
       serialNumber: this.recipe.stages.length + 1,
-      description: ""
+      description: ''
     });
   }
 
@@ -101,22 +101,22 @@ export class RecipeAddPageComponent implements OnInit {
     console.log(this.recipeId);
     if (this.recipeId == 0) {
       this.recipe = {
-        title: "",
-        description: "",
+        title: '',
+        description: '',
         cookingDuration: 0,
         portionsCount: 0,
         tags: [],
-        photoUrl: "",
+        photoUrl: '',
         ingredients: [
           {
-            title: "",
-            description: ""
+            title: '',
+            description: ''
           }
         ],
         stages: [
           {
             serialNumber: 1,
-            description: ""
+            description: ''
           }
         ]
       }

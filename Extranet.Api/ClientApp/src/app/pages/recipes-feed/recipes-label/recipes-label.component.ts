@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { RecipeCard } from '../../../models/RecipeCard';
+import { RecipeCard } from '../../../models/recipe-card';
 import { RecipeService } from '../../../services/recipe.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class RecipesLabelComponent implements OnInit {
 
   init() {
     this.pageNumber = 1;
-    if ((this.searchString == null) || (this.searchString == "")) {
+    if ((this.searchString == null) || (this.searchString == '')) {
       this.recipeService.getRecipeFeed(this.pageNumber).subscribe(val => this.cards = val);
     } else {
       this.recipeService.getRecipesFeedBySearchString(this.pageNumber, this.searchString).subscribe(val => this.cards = val);
@@ -39,7 +39,7 @@ export class RecipesLabelComponent implements OnInit {
   addMore() {
     this.pageNumber++;
 
-    if ((this.searchString == null) || (this.searchString == "")) {
+    if ((this.searchString == null) || (this.searchString == '')) {
       this.recipeService.getRecipeFeed(this.pageNumber).subscribe(val => {
         if (val.length != 0) {
           val.forEach(card => this.cards.push(card));

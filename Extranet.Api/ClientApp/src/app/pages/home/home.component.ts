@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
     if (this.userService.isLoggedIn()) {
       this.router.navigate(['/recipeadd']);
     } else {
-      this.snackBar.open("Вы незарегестрированны!", "", { duration: 2000, verticalPosition: 'top', horizontalPosition: "right" });
+      this.snackBar.open('Вы незарегестрированны!', '', { duration: 2000, verticalPosition: 'top', horizontalPosition: 'right' });
     }
   }
 

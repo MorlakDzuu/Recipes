@@ -11,16 +11,16 @@
              placeholder="Имя"
              type="text"
              name="name"
-             id="name-input"
-             [ngModel]="author.name"
+             [disabled]="!isEdit"
+             [(ngModel)]="author.name"
              disabled>
       <input class="user-data_input user-data_input_small"
              [ngClass]="isEdit ? 'user-data_input_active' : 'user-data_input'"
              placeholder="Логин"
              type="text"
              name="login"
-             id="login-input"
-             [ngModel]="author.login"
+             [disabled]="!isEdit"
+             [(ngModel)]="author.login"
              disabled>
       <div class="password">
         <input class="user-data_input user-data_input_small"
@@ -28,8 +28,8 @@
                placeholder="Пароль"
                type="password"
                name="password"
-               id="password-input"
-               [ngModel]="author.password"
+               [disabled]="!isEdit"
+               [(ngModel)]="author.password"
                disabled>
         <a class="password-invisible" *ngIf="!isVisible" (click)="showHidePassword()"></a>
         <a class="password-visible" [ngClass]="isEdit ? 'password-visible_active' : 'password-visible'" *ngIf="isVisible" (click)="showHidePassword()"></a>
@@ -42,7 +42,7 @@
                 placeholder="Напишите немного о себе"
                 type="text"
                 name="description"
-                id="description-input"
+                [disabled]="!isEdit"
                 [(ngModel)]="author.description">
             </textarea>
       <a class="user-data_button" *ngIf="isEdit" (click)="cancelEditing()">Отменить</a>

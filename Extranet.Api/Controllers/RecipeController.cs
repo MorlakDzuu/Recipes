@@ -41,14 +41,22 @@ namespace Extranet.Api.Controllers
         public async Task<IActionResult> AddRecipe( [FromBody] RecipeDto recipeDto )
         {
             int userId = GetUserId();
-            Recipe recipe = await _recipeService.AddRecipeAsync( recipeDto, userId );
-            await _tagService.AddNewTagsAsync( recipeDto.Tags );
-            await _unitOfWork.Commit();
 
-            await _tagService.AddTagsToRecipeAsync( recipeDto.Tags, recipe.Id );
-            await _unitOfWork.Commit();
+            try
+            {
+                Recipe recipe = await _recipeService.AddRecipeAsync( recipeDto, userId );
+                await _tagService.AddNewTagsAsync( recipeDto.Tags );
+                await _unitOfWork.Commit();
 
-            return Ok();
+                await _tagService.AddTagsToRecipeAsync( recipeDto.Tags, recipe.Id );
+                await _unitOfWork.Commit();
+
+                return Ok();
+            }
+            catch ( Exception ex )
+            {
+                return BadRequest( ex );
+            }
         }
 
         [HttpGet, Route( "get/{recipeId}" )]
@@ -65,10 +73,17 @@ namespace Extranet.Api.Controllers
         {
             int userId = GetUserId();
 
-            await _labelRepository.AddLikeAsync( userId, recipeId );
-            await _unitOfWork.Commit();
+            try
+            {
+                await _labelRepository.AddLikeAsync( userId, recipeId );
+                await _unitOfWork.Commit();
 
-            return Ok( "success" );
+                return Ok();
+            }
+            catch ( Exception ex )
+            {
+                return BadRequest( ex );
+            }
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
@@ -77,10 +92,17 @@ namespace Extranet.Api.Controllers
         {
             int userId = GetUserId();
 
-            await _labelRepository.AddFavoriteAsync( userId, recipeId );
-            await _unitOfWork.Commit();
+            try
+            {
+                await _labelRepository.AddFavoriteAsync( userId, recipeId );
+                await _unitOfWork.Commit();
 
-            return Ok( "success" );
+                return Ok();
+            }
+            catch ( Exception ex )
+            {
+                return BadRequest( ex );
+            }
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
@@ -88,11 +110,18 @@ namespace Extranet.Api.Controllers
         public async Task<IActionResult> DeleteLike( int recipeId )
         {
             int userId = GetUserId();
-           
-            await _recipeService.DeleteLikeByUserAsync( userId, recipeId );
-            await _unitOfWork.Commit();
-                
-            return Ok( "success" );
+
+            try
+            {
+                await _recipeService.DeleteLikeByUserAsync( userId, recipeId );
+                await _unitOfWork.Commit();
+
+                return Ok();
+            }
+            catch ( Exception ex )
+            {
+                return BadRequest( ex );
+            }
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
@@ -101,14 +130,21 @@ namespace Extranet.Api.Controllers
         {
             int userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
 
-            await _recipeService.DeleteFavoriteByUserAsync( userId, recipeId );
-            await _unitOfWork.Commit();
+            try
+            {
+                await _recipeService.DeleteFavoriteByUserAsync( userId, recipeId );
+                await _unitOfWork.Commit();
 
-            return Ok( "success" );
+                return Ok( "success" );
+            }
+            catch ( Exception ex )
+            {
+                return BadRequest( ex );
+            }
         }
 
         [HttpPost, Route( "edit/{recipeId}" )]
-        public async Task EditRecipe( [FromBody] RecipeDto recipeDto, int recipeId )
+        public async Task<IActionResult> EditRecipe( [FromBody] RecipeDto recipeDto, int recipeId )
         {
             Recipe recipe = await _recipeRepository.GetAsync( recipeId );
 
@@ -120,55 +156,73 @@ namespace Extranet.Api.Controllers
             recipe.Stages = recipeDto.Stages.ConvertAll( item => new Stage() { SerialNumber = item.SerialNumber, Description = item.Description } );
             recipe.Ingredients = recipeDto.Ingredients.ConvertAll( item => new Ingredient() { Title = item.Title, Description = item.Description } );
 
-            await _tagService.AddNewTagsAsync( recipeDto.Tags );
-            await _unitOfWork.Commit();
+            try
+            {
+                await _tagService.AddNewTagsAsync( recipeDto.Tags );
+                await _unitOfWork.Commit();
 
-            await _tagService.DeleteOldTagsAsync( recipeId, recipeDto.Tags );
-            await _tagService.AddTagsToRecipeAsync( recipeDto.Tags, recipeId );
-            await _unitOfWork.Commit();
+                await _tagService.DeleteOldTagsAsync( recipeId, recipeDto.Tags );
+                await _tagService.AddTagsToRecipeAsync( recipeDto.Tags, recipeId );
+                await _unitOfWork.Commit();
+
+                return Ok();
+            }
+            catch ( Exception ex )
+            {
+                return BadRequest( ex );
+            }
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "delete/{recipeId}" )]
-        public async Task DeleteRecipe( int recipeId )
+        public async Task<IActionResult> DeleteRecipe( int recipeId )
         {
-            await _tagService.DeleteOldTagsAsync( recipeId );
-            await _recipeRepository.DeleteAsync( recipeId );
-            await _unitOfWork.Commit();
+            try
+            {
+                await _tagService.DeleteOldTagsAsync( recipeId );
+                await _recipeRepository.DeleteAsync( recipeId );
+                await _unitOfWork.Commit();
+
+                return Ok();
+            }
+            catch ( Exception ex )
+            {
+                return BadRequest( ex );
+            }
         }
 
         [HttpGet, Route( "feed/{pageNumber}" )]
-        public async Task<List<RecipeFeedDto>> GetFeed( int pageNumber )
+        public async Task<List<RecipeFeedDto>> GetFeed( int pageNumber, int pageSize )
         {
             int userId = GetUserId();
 
-            return await _recipeService.GetRecipesFeedAsync( pageNumber, userId );
+            return await _recipeService.GetRecipesFeedAsync( pageNumber, pageSize, userId );
         }
 
         [HttpGet, Route( "feed/search/{pageNumber}" )]
-        public async Task<List<RecipeFeedDto>> GetFeedBySearchString( int pageNumber, string search )
+        public async Task<List<RecipeFeedDto>> GetFeedBySearchString( int pageNumber, string search, int pageSize )
         {
             int userId = GetUserId();
 
-            return await _recipeService.GetRecipesFeedAsync( pageNumber, userId, searchString: search );
+            return await _recipeService.GetRecipesFeedAsync( pageNumber, pageSize, userId, searchString: search );
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "feed/user/{pageNumber}" )]
-        public async Task<List<RecipeFeedDto>> GetUserFeed( int pageNumber )
+        public async Task<List<RecipeFeedDto>> GetUserFeed( int pageNumber, int pageSize )
         {
             int userId = GetUserId();
 
-            return await _recipeService.GetRecipesFeedAsync( pageNumber, userId, orderByUser: true );
+            return await _recipeService.GetRecipesFeedAsync( pageNumber, pageSize, userId, orderByUser: true );
         }
 
         [Authorize( AuthenticationSchemes = "Bearer" )]
         [HttpGet, Route( "feed/favorite/{pageNumber}" )]
-        public async Task<List<RecipeFeedDto>> GetFavorites( int pageNumber )
+        public async Task<List<RecipeFeedDto>> GetFavorites( int pageNumber, int pageSize )
         {
             int userId = GetUserId();
 
-            return await _recipeService.GetRecipesFeedAsync( pageNumber, userId, orderByFavorite: true );
+            return await _recipeService.GetRecipesFeedAsync( pageNumber, pageSize, userId, orderByFavorite: true );
         }
 
         [HttpGet, Route( "feed/recipeOfDay" )]
@@ -186,6 +240,7 @@ namespace Extranet.Api.Controllers
             {
                 userId = int.Parse( User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier ).Value );
             }
+
             return userId;
         }
     }

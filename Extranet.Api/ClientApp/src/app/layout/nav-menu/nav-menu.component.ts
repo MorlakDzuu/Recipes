@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { UserLogin } from '../../models/user-login';
 import { DataService } from '../../services/data.service';
 import { UserService } from '../../services/user.service';
 import { AuthorizationComponent } from '../authorization/authorization.component';
@@ -24,23 +23,11 @@ export class NavMenuComponent implements OnInit {
     if (_isLogIn) {
       this.userService.logout().subscribe(data => {
         if (data.status == 200) {
-          this.dataService.userName = "";
+          this.dataService.userName = '';
           this.isLogIn = !_isLogIn;
         }
       });
     }
-    /*var userLogin = new UserLogin();
-    userLogin.login = "danil228";
-    userLogin.password = "123456";
-
-    if (!_isLogIn) {
-      this.userService.userLogin(userLogin).subscribe(data => {
-        localStorage.setItem("userName", data.name);
-        localStorage.setItem("token", data.token);
-        this.isLogIn = !_isLogIn;
-      });
-    }
-    */
   }
 
   ngOnInit(): void {

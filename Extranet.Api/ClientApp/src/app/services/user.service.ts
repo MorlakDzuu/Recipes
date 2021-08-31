@@ -13,42 +13,42 @@ import { UserSettings } from '../models/user-settings';
 })
 export class UserService {
 
-  private basePath: string = "user/";
+  private basePath: string = 'user/';
 
   constructor(private http: HttpClient) { }
 
   public editProfile(user: User): Observable<any> {
-    var path: string = this.basePath + "edit";
+    var path: string = this.basePath + 'edit';
     return this.http.post(path, user, { observe: 'response' });
   }
 
   public getUserInfo(): Observable<UserProfileInfo> {
-    var path: string = this.basePath + "info";
+    var path: string = this.basePath + 'info';
     return this.http.get<UserProfileInfo>(path);
   }
 
   public userLogin(user: UserLogin): Observable<UserSettings> {
-    var path: string = this.basePath + "login";
+    var path: string = this.basePath + 'login';
     return this.http.post<UserSettings>(path, user);
   }
 
   public userRegister(user: UserRegister): Observable<any> {
-    var path: string = this.basePath + "register";
+    var path: string = this.basePath + 'register';
     return this.http.post(path, user);
   }
 
   public userVerifyToken() {
-    var path: string = this.basePath + "verify";
+    var path: string = this.basePath + 'verify';
     return this.http.get(path, { observe: 'response' });
   }
 
   public logout() {
-    var path: string = this.basePath + "logout";
+    var path: string = this.basePath + 'logout';
     return this.http.get(path, { observe: 'response' });
   }
 
   public isLoggedIn(): boolean {
-    if (localStorage.getItem("userName") != null)
+    if (localStorage.getItem('userName') != null)
       return true;
     return false;
   }

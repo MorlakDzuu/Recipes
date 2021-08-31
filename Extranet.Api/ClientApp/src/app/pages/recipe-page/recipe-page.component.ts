@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Recipe } from '../../models/Recipe';
-import { RecipeCard } from '../../models/RecipeCard';
+import { RecipeCard } from '../../models/recipe-card';
 import { RecipeService } from '../../services/recipe.service';
 
 @Component({
@@ -36,7 +36,7 @@ export class RecipePageComponent implements OnInit {
       this.recipeCard.tags = this.recipe.tags;
       this.recipeCard.isLiked = this.recipe.isLiked;
       this.recipeCard.isFavorite = this.recipe.isFavorite;
-      this.recipeCard.authorLogin = "";
+      this.recipeCard.authorLogin = this.recipe.authorLogin;
 
       this.isMyRecipe = this.recipe.isMyRecipe;
     });

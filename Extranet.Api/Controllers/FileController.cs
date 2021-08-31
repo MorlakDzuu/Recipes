@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Extranet.Api.Controllers
@@ -30,10 +27,10 @@ namespace Extranet.Api.Controllers
                     return Ok( "file/download/" + fileName );
                 }
                 return BadRequest();
-            } catch(Exception e)
+            }
+            catch ( Exception e )
             {
-                Console.WriteLine( e );
-                return BadRequest(e.Message);
+                return BadRequest( e.Message );
             }
         }
 
@@ -42,6 +39,7 @@ namespace Extranet.Api.Controllers
         {
             string filePath = Directory.GetCurrentDirectory() + "/Files/" + filename;
             var bytes = await System.IO.File.ReadAllBytesAsync( filePath );
+
             return File( bytes, "image/" + filename.Split( '.' )[ 1 ] );
         }
 
