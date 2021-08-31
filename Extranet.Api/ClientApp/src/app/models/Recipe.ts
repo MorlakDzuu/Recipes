@@ -1,17 +1,20 @@
-import { Ingredient } from "./Ingredient";
-import { Step } from "./Step";
+import { Ingredient } from "./ingredient";
+import { Stage } from "./stage";
 
-export interface Recipe {
+export class Recipe {
   id: number;
-  name: string;
+  title: string;
   description: string;
-  author: string;
-  likes: number;
-  favourites: number;
-  timeMinutes: number;
-  numberOfPersons: number;
+  authorLogin: string;
+  likesCount: number;
+  favoritesCount: number;
+  cookingDuration: number;
+  portionsCount: number;
+  isLiked: boolean;
+  isFavorite: boolean;
+  isMyRecipe: boolean;
   tags: string[];
-  photo: string;
+  photoUrl: string;
   ingredients: Ingredient[];
-  steps: Step[];
+  stages: Stage[];
 }

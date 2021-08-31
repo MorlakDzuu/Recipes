@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Application.Dto
 {
@@ -18,5 +14,7 @@ namespace Application.Dto
         public int LikesCount { get; set; }
         public List<string> Tags { get; set; }
         public bool IsLiked { get; set; }
+        public bool IsFavorite { get; set; }
+        public string AuthorLogin { get; set; }
     }
 }

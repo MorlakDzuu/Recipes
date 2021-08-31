@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Domain.User
@@ -12,5 +9,6 @@ namespace Domain.User
         public Task<List<User>> GetAllAsync();
         public Task AddUserAsync( User user );
         public Task<User> GetByLoginAsync( string login );
+        public Task<string> GetLoginByRecipeId( int id );
     }
 }

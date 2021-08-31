@@ -1,4 +1,5 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { DataService } from '../../../services/data.service';
 
 @Component({
   selector: 'logged-in',
@@ -9,14 +10,16 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 export class LoggedInComponent implements OnInit {
 
   @Output() myEvent = new EventEmitter<boolean>();
+  name: string;
+
+  constructor(private dataService: DataService) { }
 
   toggleLoginStatus(_isLogIn: any) {
       this.myEvent.emit(_isLogIn);
   }
 
-  constructor() { }
-
   ngOnInit(): void {
+    this.dataService.userNameValue.subscribe(val => this.name = val);
   }
 
 }

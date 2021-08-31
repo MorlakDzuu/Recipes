@@ -47,10 +47,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\app\layout\" />
-    <Folder Include="ClientApp\src\app\pages\" />
     <Folder Include="ClientApp\src\assets\images\" />
-    <Folder Include="Files\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\star.svg" />
+    <None Include="wwwroot\images\star_full.svg" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

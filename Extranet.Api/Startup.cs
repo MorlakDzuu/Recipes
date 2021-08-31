@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Extranet.Api.Auth;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Threading.Tasks;
 
 namespace Extranet.API
 {
@@ -29,7 +30,6 @@ namespace Extranet.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices( IServiceCollection services )
         {
             services.AddControllersWithViews();
@@ -45,7 +45,7 @@ namespace Extranet.API
 
             services.AddScoped<ILabelRepository, LabelRepository>();
 
-            services.AddScoped<IPasswordService, PasswordService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddDbContext<ApplicationContext>( options => options.UseNpgsql( Configuration.GetSection( "ConnectionString" ).Value ) );
             services.AddScoped<IUnitOfWork>( sp => sp.GetService<ApplicationContext>() );
@@ -73,16 +73,31 @@ namespace Extranet.API
                             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
                             ValidateIssuerSigningKey = true,
                         };
+
+                        options.Events = new JwtBearerEvents()
+                        {
+                            OnAuthenticationFailed = c =>
+                            {
+                                c.NoResult();
+                                c.Response.StatusCode = 403;
+                                c.Response.ContentType = "text/plain";
+                                c.Response.WriteAsync( "Не удалось аутентифицировать пользователя" ).Wait();
+                                return Task.CompletedTask;
+                            },
+                            OnChallenge = c =>
+                            {
+                                c.HandleResponse();
+                                return Task.CompletedTask;
+                            }
+                        };
                     } );
 
-            // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles( configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             } );
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure( IApplicationBuilder app, IWebHostEnvironment env )
         {
             if ( env.IsDevelopment() )
@@ -120,9 +135,6 @@ namespace Extranet.API
 
             app.UseSpa( spa =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
                 spa.Options.SourcePath = "ClientApp";
 
                 if ( env.IsDevelopment() )

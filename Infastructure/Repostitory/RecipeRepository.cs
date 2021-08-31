@@ -2,10 +2,8 @@
 using Domain.Recipe;
 using Domain.Tag;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infastructure.Repostitory
@@ -49,6 +47,11 @@ namespace Infastructure.Repostitory
         public async Task<Recipe> GetAsync( int id )
         {
             return await _recipesDbSet.Where( item => item.Id == id ).SingleOrDefaultAsync();
+        }
+
+        public async Task<List<Recipe>> GetByUserIdAsync( int userId )
+        {
+            return await _recipesDbSet.Where( item => item.UserId == userId ).ToListAsync();
         }
 
         public async Task<Recipe> GetRecipeOfDay()

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Domain.Label
 {
@@ -15,5 +11,8 @@ namespace Domain.Label
         public Task<int> GetFavoriteCountByRecipeIdAsync( int recipeId );
         public Task<int> GetLikeCountByRecipeIdAsync( int recipeId );
         public Task<bool> IsRecipeLikedByUser( int recipeId, int userId );
+        public Task<bool> IsRecipeFavoriteByUser( int recipeId, int userId );
+        public Task<int> GetLikeCountByUserIdAsync( int userId );
+        public Task<int> GetFvoriteCountByUserIdAsync( int userId );
     }
 }

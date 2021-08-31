@@ -15,5 +15,10 @@ code {
   border-color: #1861ac;
 }
 
+.custom-dialog-container .mat-dialog-container {
+  padding: 0px;
+  border-radius: 24px;
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

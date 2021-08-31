@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Extranet.Api.Controllers
@@ -13,21 +10,28 @@ namespace Extranet.Api.Controllers
     public class FileController : Controller
     {
         [HttpPost, Route( "upload" )]
-        public async Task<string> UploadFile( IFormFile uploadedFile )
+        public async Task<IActionResult> UploadFile( IFormFile uploadedFile )
         {
-            if ( uploadedFile != null )
+            try
             {
-                string projectPath = System.IO.Directory.GetCurrentDirectory();
-                string fileName = Guid.NewGuid().ToString() + "." + uploadedFile.FileName.Split( '.' )[ 1 ];
-                string path = "/Files/" + fileName;
-                using ( var fileStream = new FileStream( projectPath + path, FileMode.Create ) )
+                if ( uploadedFile != null )
                 {
-                    await uploadedFile.CopyToAsync( fileStream );
-                }
+                    string projectPath = System.IO.Directory.GetCurrentDirectory();
+                    string fileName = Guid.NewGuid().ToString() + "." + uploadedFile.FileName.Split( '.' )[ 1 ];
+                    string path = "/Files/" + fileName;
+                    using ( var fileStream = new FileStream( projectPath + path, FileMode.Create ) )
+                    {
+                        await uploadedFile.CopyToAsync( fileStream );
+                    }
 
-                return "file/download/" + fileName;
+                    return Ok( "file/download/" + fileName );
+                }
+                return BadRequest();
             }
-            return "";
+            catch ( Exception e )
+            {
+                return BadRequest( e.Message );
+            }
         }
 
         [HttpGet, Route( "download/{filename}" )]
@@ -35,6 +39,7 @@ namespace Extranet.Api.Controllers
         {
             string filePath = Directory.GetCurrentDirectory() + "/Files/" + filename;
             var bytes = await System.IO.File.ReadAllBytesAsync( filePath );
+
             return File( bytes, "image/" + filename.Split( '.' )[ 1 ] );
         }
 

@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchRecipesComponent implements OnInit {
 
-  tags: string[] = ["Мясо", "Деликатесы", "Пироги", "Рыба"];
+  tags: string[] = ['Мясо', 'Деликатесы', 'Пироги', 'Рыба'];
 
   constructor() { }
 
